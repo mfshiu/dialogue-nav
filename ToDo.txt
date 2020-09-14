@@ -1,0 +1,5 @@
+Bug: 完成任務後，再次下指令會：||PaMacCore (AUHAL)|| Error on line 2490: err='-50', msg=Unknown Error
+Task: 要加上 Client 發送 intention 的功能，以能進行主動詢問
+
+>>>>> 己完成 <<<<<
+
