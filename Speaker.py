@@ -13,6 +13,9 @@ from google.cloud import texttospeech
 
 client = texttospeech.TextToSpeechClient()
 
+global is_muted
+is_muted = False
+
 voice = texttospeech.VoiceSelectionParams(
     language_code="zh-TW", ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL
 )
@@ -47,25 +50,6 @@ def __do_play(msg):
     except:
         print("Play sound error: ", output_file)
 
-# def __do_play(msg):
-#     print("Speaker: " + msg)
-#     synthesis_input = texttospeech.SynthesisInput(text=msg)
-#     response = client.synthesize_speech(
-#         input=synthesis_input, voice=voice, audio_config=audio_config
-#     )
-#
-#     tag = datetime.now().strftime("%Y%m%d%H%M%S")
-#     output_file = "./output/speak-" + tag + ".mp3"
-#     with open(output_file, "wb") as out:
-#         # Write the response to the output file.
-#         out.write(response.audio_content)
-#         print('Audio content written to file: ' + output_file)
-#
-#     try:
-#         playsound(output_file)
-#         os.remove(output_file)
-#     except:
-#         print("Play sound error: ", output_file)
 
 def __tts(msg):
     synthesis_input = texttospeech.SynthesisInput(text=msg)
@@ -74,19 +58,33 @@ def __tts(msg):
     )
     return response.audio_content
 
+
+def mute():
+    global is_muted
+    is_muted = True
+
+
+def unmute():
+    global is_muted
+    is_muted = False
+
+
 def play(msg):
-    __do_play(msg)
+    if not is_muted:
+        __do_play(msg)
     return
 
 
 def play_async(msg):
-    t = threading.Thread(target=__do_play, args=(msg,))
-    t.start()
+    if not is_muted:
+        t = threading.Thread(target=__do_play, args=(msg,))
+        t.start()
     return
 
 
 def play_sound(sound_file):
-    playsound(sound_file)
+    if not is_muted:
+        playsound(sound_file)
 
 
 def save(msg, file_path):

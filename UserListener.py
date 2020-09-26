@@ -49,7 +49,7 @@ class UserListener(threading.Thread):
         logger.info("---recording---")
 
         while HotWord.is_listening():
-            HotWord.stop_listen()
+            self.__stop_listen_hotword()
             logger.warn("Waiting hot word stop.")
             time.sleep(1)
 
@@ -129,7 +129,9 @@ class UserListener(threading.Thread):
         self.listen_hotword()
         while self.running:
             if self.job_count > 0:
+                Speaker.mute()
                 self.__record(self.limit_seconds)
+                Speaker.unmute()
                 self.job_count = 0
                 time.sleep(1)
             time.sleep(0.1)

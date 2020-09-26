@@ -19,6 +19,12 @@ class Sub4(threading.Thread):
         self.running = True
         return
 
+    def cancel_destination(self):
+        dest = Information.get_return_dict('sub4_destination')
+        if dest is not None:
+            Speaker.play("己停止前往"+dest)
+        Information.set_return_dict("sub4_arrived", True)
+
     def gen_direction_text(self, direction):
         directions = {
             "front": "前",
@@ -32,19 +38,6 @@ class Sub4(threading.Thread):
         }
         return directions[direction]
 
-    def gen_kanban_name_text(self, name):
-        names = {
-            "exit_sign": "出口",
-            "wc_sign": "廁所",
-            "dangerous_sign": "危險",
-            "elev_sign": "電梯",
-            "sign": "",
-        }
-        if name in names:
-            return names[name]
-        else:
-            return "不明"
-
     def get_kanban(self, kanban_name):
         viewed_kanbans = Information.get_return_dict('kanban_indoor')
         if viewed_kanbans is None:
@@ -54,13 +47,6 @@ class Sub4(threading.Thread):
                 return kanban
         return None
 
-    # def __get_kanban(self, kanban_name):
-    #     all_kanbans_str = Information.get_return_dict('kanban_indoor')
-    #     if all_kanbans_str is None:
-    #         return None
-    #     all_kanbans = json.loads(all_kanbans_str)
-    #     return all_kanbans[kanban_name]
-
     def speak_kanban(self, kanban):
         msg = ""    # msg = format("%s方%s公尺處，有一個%s標示指向%s方")
         if kanban["user_direction"] is not None:
@@ -68,7 +54,7 @@ class Sub4(threading.Thread):
         if kanban["distance"] is not None:
             msg += str(kanban["distance"]) + "公尺處"
         if kanban["name"] is not None:
-            msg += "有一個" + self.gen_kanban_name_text(kanban["name"]) + "標示"
+            msg += "有一個" + Information.get_indoor_destination_text(kanban["name"]) + "標示"
         if kanban["sign_direction"] is not None:
             msg += "指向" + self.gen_direction_text(kanban["sign_direction"]) + "方"
         Speaker.play_async(msg)
@@ -88,15 +74,15 @@ class Sub4(threading.Thread):
         arrived = Information.get_return_dict('sub4_arrived')
         if not arrived:
             dest = Information.get_return_dict('sub4_destination')
-            kanban_name = self.gen_kanban_name_text(dest)
+            kanban_name = Information.get_indoor_destination_text(dest)
             kanban = self.get_kanban(dest)
             if kanban is not None:
                 distance = kanban["distance"]
                 if distance is not None:
                     if float(distance) < 1.5:
                         logger.warn("Arrived.")
-                        Information.set_return_dict("sub4_arrived", True)
                         Speaker.play("您已經抵達" + kanban_name)
+                        Information.set_return_dict("sub4_arrived", True)
                     else:
                         self.speak_kanban(kanban)
                 else:
@@ -133,6 +119,12 @@ class Sub4(threading.Thread):
                     "sign_direction": "right",
                     "user_direction": "front",
                     "distance": 3.3
+                },
+                {
+                    "name": "platform",
+                    "sign_direction": "right",
+                    "user_direction": "front",
+                    "distance": 0.3
                 }
             ],
             [
@@ -147,6 +139,12 @@ class Sub4(threading.Thread):
                     "sign_direction": "left",
                     "user_direction": "front_right",
                     "distance": 6.1
+                },
+                {
+                    "name": "platform",
+                    "sign_direction": "front_right",
+                    "user_direction": "front",
+                    "distance": 2.3
                 }
             ],
             [
@@ -161,6 +159,12 @@ class Sub4(threading.Thread):
                     "sign_direction": "left",
                     "user_direction": "front",
                     "distance": 1.3
+                },
+                {
+                    "name": "platform",
+                    "sign_direction": "right",
+                    "user_direction": "front_left",
+                    "distance": 4.1
                 }
             ],
             [
@@ -195,6 +199,12 @@ class Sub4(threading.Thread):
                     "sign_direction": "back_left",
                     "user_direction": "front",
                     "distance": 3.7
+                },
+                {
+                    "name": "platform",
+                    "sign_direction": "back_right",
+                    "user_direction": "front",
+                    "distance": 2.3
                 }
             ],
             [
@@ -209,6 +219,12 @@ class Sub4(threading.Thread):
                     "sign_direction": "left",
                     "user_direction": "front",
                     "distance": 7.3
+                },
+                {
+                    "name": "platform",
+                    "sign_direction": "right",
+                    "user_direction": "front_left",
+                    "distance": 7.8
                 }
             ],
         ]

@@ -39,6 +39,10 @@ def get_indoor_destination():
     return get_return_dict("sub4_destination")
 
 
+def get_outdoor_destination():
+    return get_return_dict("sub1_destination")
+
+
 def get_info(name):
     return __information[name]
 
@@ -51,12 +55,28 @@ def is_indoor():
     return get_return_dict("in_outdoor_status")
 
 
-def parse_destination(destination_name):
+def get_indoor_destination_text(name):
+    names = {
+        "exit_sign": "出口",
+        "wc_sign": "廁所",
+        "dangerous_sign": "危險",
+        "elev_sign": "電梯",
+        "sign": "",
+        "platform": "月台",
+    }
+    if name in names:
+        return names[name]
+    else:
+        return "不明"
+
+
+def parse_indoor_destination(destination_name):
     names = {
         "出口": "exit_sign",
         "廁所": "wc_sign",
         "危險": "dangerous_sign",
         "電梯": "elev_sign",
+        "月台": "platform",
     }
     if destination_name in names:
         return names[destination_name]
@@ -69,13 +89,19 @@ def set_indoor_destination(dest):
     set_return_dict('sub4_arrived', False)
 
 
+def stop_indoor_destination():
+    set_return_dict('sub4_destination', None)
+    set_return_dict('sub4_arrived', True)
+
+
 def set_outdoor_destination(coordinate):
     set_return_dict('sub1_destination', coordinate)
     set_return_dict('sub1_arrived', False)
 
-    # Test, arrived after 10 seconds
-    # t = threading.Thread(target=__test_walk)
-    # t.start()
+
+def stop_outdoor_destination():
+    set_return_dict('sub1_destination', None)
+    set_return_dict('sub1_arrived', True)
 
 
 def set_return_dict(name, value):
@@ -88,7 +114,7 @@ def start():
     set_return_dict('sub1_arrived', True)
     set_return_dict('sub4_destination', None)
     set_return_dict('sub4_arrived', True)
-    set_return_dict('in_outdoor_status', True)
+    set_return_dict('in_outdoor_status', False)
 
     t = threading.Thread(target=__run)
     t.start()

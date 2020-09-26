@@ -103,9 +103,12 @@ class DialogueClient:
             self.shutdown()
         signal.signal(signal.SIGINT, signal_handler)
 
-    def standby(self):
+        Speaker.play_async("歡迎使用視障者的智慧伙伴0.1版，我叫小美，請呼叫我的名字，我可以帶你去想去的地方。")
+
+    def standby(self, prompt=True):
         logger.info("Standby")
-        Speaker.play_async("如果需要我的協助再呼叫我。")
+        if prompt:
+            Speaker.play_async("如果需要協助再呼叫我。")
         self._user_listener.listen_hotword()
 
 

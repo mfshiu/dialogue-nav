@@ -2,8 +2,8 @@ import time
 import logging
 import queue
 import signal
-import HotwordListener
-import HotwordProcessor
+# import HotwordListener
+# import HotwordProcessor
 import UserListener
 import UserProcessor
 import threading
@@ -26,11 +26,11 @@ if __name__ == '__main__':
     logger.debug("__main__")
     hot_words = queue.Queue(10)
 
-    p1 = HotwordListener.HotwordListener(args=(hot_words,))
+    # p1 = HotwordListener.HotwordListener(args=(hot_words,))
     p3 = UserListener.UserListener(args=(hot_words,))
     p4 = UserProcessor.UserProcessor(args=(hot_words, p3))
-    p1.start()
-    time.sleep(1)
+    # p1.start()
+    # time.sleep(1)
     p3.start()
     time.sleep(1)
     p4.start()

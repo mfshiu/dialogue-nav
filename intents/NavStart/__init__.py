@@ -5,7 +5,7 @@ from Destination import Destination
 import Information
 
 global destination
-
+destination = None
 
 def __find_place(place):
     name, coord, dist = map.get_nearest_place(place)
@@ -16,13 +16,14 @@ def __find_place(place):
 
 
 def __process_indoor(client, target):
-    dest = Information.parse_destination(target)
+    dest = Information.parse_indoor_destination(target)
     if dest is None:
         Speaker.play("很抱歉，目前我還不知道怎麼帶你去" + target)
         client.standby()
     else:
         Speaker.play("好的，我現在開始找尋附近的" + target)
         Information.set_indoor_destination(dest)
+        client.standby(prompt=False)
 
 
 def __process_outdoor(client, target):
