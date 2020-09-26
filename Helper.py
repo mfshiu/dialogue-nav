@@ -3,6 +3,13 @@ import logging
 import sys
 
 
+def is_arrived(curr, dest):
+    lan1 = round(curr[0], 5)
+    lnt1 = round(curr[1], 5)
+    lan2 = round(dest[0], 5)
+    lnt2 = round(dest[1], 5)
+    return lan1 == lan2 and lnt1 == lnt2
+
 # def find_places(place)
 #     places = gmaps.places(query='7-ELEVEN', radius='300', language='zh-TW')
 #     print(places)

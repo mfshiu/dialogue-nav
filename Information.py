@@ -4,18 +4,11 @@ import time
 from Helper import get_module_logger
 logger = get_module_logger(__name__)
 
-__source = dict()
+return_dict = dict()
 __information = dict()
 __callbacks = dict()
-global __running
 __running = False
 logger.debug("__init__")
-
-
-def __read_source():
-    __source['gps'] = (25.0230239, 121.2210628)
-    __source['time'] = time.process_time()
-    return __source
 
 
 def __run():
@@ -30,9 +23,7 @@ def __run():
 
 def __update():
     callbacks = []
-
-    source = __read_source()
-    for key, value in source.items():
+    for key, value in return_dict.items():
         if key not in __information or __information[key] != value:
             if key in __callbacks:
                 cb = __callbacks[key]
@@ -44,29 +35,61 @@ def __update():
         c[0](c[1], c[2])
 
 
+def get_indoor_destination():
+    return get_return_dict("sub4_destination")
+
+
 def get_info(name):
     return __information[name]
 
 
-def __set_info(name, value):
-    __information[name] = value
+def get_return_dict(name):
+    return return_dict[name]
 
 
-def __test_walk():
-    time.sleep(50)
-    __source['sub1_arrived'] = True
+def is_indoor():
+    return get_return_dict("in_outdoor_status")
 
 
-def notify_destination(coordinate):
-    __set_info('sub1_destination', coordinate)
-    __set_info('sub1_arrived', False)
+def parse_destination(destination_name):
+    names = {
+        "出口": "exit_sign",
+        "廁所": "wc_sign",
+        "危險": "dangerous_sign",
+        "電梯": "elev_sign",
+    }
+    if destination_name in names:
+        return names[destination_name]
+    else:
+        return None
 
-    # Test, arrived after 10 sesonds
-    t = threading.Thread(target=__test_walk)
-    t.start()
+
+def set_indoor_destination(dest):
+    set_return_dict('sub4_destination', dest)
+    set_return_dict('sub4_arrived', False)
+
+
+def set_outdoor_destination(coordinate):
+    set_return_dict('sub1_destination', coordinate)
+    set_return_dict('sub1_arrived', False)
+
+    # Test, arrived after 10 seconds
+    # t = threading.Thread(target=__test_walk)
+    # t.start()
+
+
+def set_return_dict(name, value):
+    return_dict[name] = value
 
 
 def start():
+    # init return_dict
+    set_return_dict('sub1_destination', (0, 0))
+    set_return_dict('sub1_arrived', True)
+    set_return_dict('sub4_destination', None)
+    set_return_dict('sub4_arrived', True)
+    set_return_dict('in_outdoor_status', True)
+
     t = threading.Thread(target=__run)
     t.start()
 
