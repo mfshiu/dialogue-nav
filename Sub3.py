@@ -1,8 +1,8 @@
 import threading
-import Helper
+from dialogue import Helper
 import signal
 import time
-from DialogueClient import DialogueClient
+from dialogue.DialogueClient import DialogueClient
 from multiprocessing import Manager
 
 logger = Helper.get_module_logger(__name__)
@@ -20,8 +20,11 @@ class Sub3(threading.Thread):
     def run(self):
         self.dialogue_client.start(self.return_dict)
         while self.running:
-            time.sleep(.1)
-        self.dialogue_client.shutdown()
+            if self.dialogue_client.is_terminated:
+                self.terminate()
+            time.sleep(1)
+        if not self.dialogue_client.is_terminated:
+            self.dialogue_client.shutdown()
         logger.info("terminated")
         return
 
