@@ -143,4 +143,5 @@ class UserListener(threading.Thread):
 
     def terminate(self):
         self.running = False
+        HotWord.stop_listen()
         logger.warn("terminating")

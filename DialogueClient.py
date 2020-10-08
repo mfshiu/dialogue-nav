@@ -1,6 +1,5 @@
 import Dialogflow
 import queue
-import signal
 import Information
 from Sub1 import Sub1
 from Sub4 import Sub4
@@ -83,7 +82,7 @@ class DialogueClient:
         self._user_processor.terminate()
         self._user_listener.terminate()
 
-    def start(self):
+    def start(self, return_dict):
         self._user_listener = UserListener.UserListener(args=(self.user_words,))
         self._user_listener.start()
 
@@ -98,10 +97,6 @@ class DialogueClient:
         self.sub1.start()
         self.sub4 = Sub4()
         self.sub4.start()
-
-        def signal_handler(signal, frame):
-            self.shutdown()
-        signal.signal(signal.SIGINT, signal_handler)
 
         Speaker.play_async("歡迎使用視障者的智慧伙伴0.1版，我叫小美，請呼叫我的名字，我可以帶你去想去的地方。")
 
