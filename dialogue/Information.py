@@ -4,7 +4,7 @@ import time
 from dialogue.Helper import get_module_logger
 logger = get_module_logger(__name__)
 
-return_dict = dict()
+global return_dict
 __information = dict()
 __callbacks = dict()
 __running = False
@@ -23,6 +23,7 @@ def __run():
 
 def __update():
     callbacks = []
+    global return_dict
     for key, value in return_dict.items():
         if key not in __information or __information[key] != value:
             if key in __callbacks:
@@ -48,7 +49,11 @@ def get_info(name):
 
 
 def get_return_dict(name):
-    return return_dict[name]
+    global return_dict
+    if name in return_dict:
+        return return_dict[name]
+    else:
+        return None
 
 
 def is_indoor():
@@ -105,12 +110,16 @@ def stop_outdoor_destination():
 
 
 def set_return_dict(name, value):
+    global return_dict
     return_dict[name] = value
 
 
-def start():
+def start(source_return_dict):
+    global return_dict
+    return_dict = source_return_dict
+
     # init return_dict
-    set_return_dict('sub1_destination', (0, 0))
+    # set_return_dict('sub1_destination', (0, 0))
     set_return_dict('sub1_arrived', True)
     set_return_dict('sub4_destination', None)
     set_return_dict('sub4_arrived', True)

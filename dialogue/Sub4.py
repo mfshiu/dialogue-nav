@@ -6,12 +6,14 @@ logger = Helper.get_module_logger(__name__)
 
 
 class Sub4(threading.Thread):
-    def __init__(self):
+    def __init__(self, is_simulation):
         super(Sub4, self).__init__()
         logger.debug("__init__")
         self.current_location = (0, 0)
-        self.sim_kanbans_index = 0
-        self.sim_kanbans = self.read_sim_kanbans()
+        self.is_simulation = is_simulation
+        if self.is_simulation:
+            self.sim_kanbans_index = 0
+            self.sim_kanbans = self.read_sim_kanbans()
         self.running = True
         return
 
@@ -55,7 +57,7 @@ class Sub4(threading.Thread):
             msg += "指向" + self.gen_direction_text(kanban["sign_direction"]) + "方"
         Speaker.play_async(msg)
 
-    def update_kanbans(self):
+    def update_sim_kanbans(self):
         if not Information.is_indoor():
             return  # Not indoor, don't update
 
@@ -91,7 +93,8 @@ class Sub4(threading.Thread):
 
     def run(self):
         while self.running:
-            self.update_kanbans()
+            if self.is_simulation:
+                self.update_sim_kanbans()
             self.walk_timer()
             time.sleep(8)
         logger.info("terminated")

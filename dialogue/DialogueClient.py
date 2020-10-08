@@ -1,6 +1,4 @@
 import queue
-from dialogue.Sub1 import Sub1
-from dialogue.Sub4 import Sub4
 from dialogue import Speaker, UserListener, Information, UserProcessor, Dialogflow
 
 from dialogue.Helper import get_module_logger
@@ -26,8 +24,6 @@ class DialogueClient:
             self.is_terminated = True
             self.user_words = queue.Queue(10)
             self.destinations = []
-            self.sub1 = None
-            self.sub4 = None
             DialogueClient._instance = self
 
     def __arrived_outdoor(self, key, value):
@@ -73,8 +69,6 @@ class DialogueClient:
         self._user_listener.listen()
 
     def shutdown(self):
-        self.sub4.terminate()
-        self.sub1.terminate()
         Information.terminate()
         self._user_processor.terminate()
         self._user_listener.terminate()
@@ -89,12 +83,8 @@ class DialogueClient:
 
         Information.subscribe('sub1_arrived', self.__arrived_outdoor, True)
         Information.subscribe('sub4_arrived', self.__arrived_indoor, True)
-        Information.start()
+        Information.start(return_dict)
 
-        self.sub1 = Sub1()
-        # self.sub1.start()
-        self.sub4 = Sub4()
-        # self.sub4.start()
         self.is_terminated = False
 
         Speaker.play_async("歡迎使用視障者的智慧伙伴0.1版，我叫小美，請呼叫我的名字，我可以帶你去想去的地方。")
