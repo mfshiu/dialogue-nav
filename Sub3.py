@@ -41,10 +41,9 @@ if __name__ == '__main__':
 
     sub3.start()
 
-
     def shutdown():
         sub3.terminate()
 
-    threading.Timer(5, shutdown).start()
+    # threading.Timer(5, shutdown).start()
 
 
