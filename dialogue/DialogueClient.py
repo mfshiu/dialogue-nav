@@ -87,7 +87,7 @@ class DialogueClient:
 
         self.is_terminated = False
 
-        Speaker.play_async("歡迎使用視障者的智慧伙伴0.1版，我叫小美，請呼叫我的名字，我可以帶你去想去的地方。")
+        Speaker.play_async("歡迎使用視障者的智慧伙伴，我叫小美，請呼叫我的名字，我可以帶你去想去的地方。")
 
     def standby(self, prompt=True):
         logger.info("Standby")
