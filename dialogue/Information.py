@@ -25,12 +25,15 @@ def __update():
     callbacks = []
     global return_dict
     for key, value in return_dict.items():
-        if key not in __information or __information[key] != value:
-            if key in __callbacks:
-                cb = __callbacks[key]
-                if 'any' == cb[1] or value == cb[1]:
-                    callbacks.append((cb[0], key, value))
-            __information[key] = value
+        try:
+            if key not in __information or __information[key] != value:
+                if key in __callbacks:
+                    cb = __callbacks[key]
+                    if 'any' == cb[1] or value == cb[1]:
+                        callbacks.append((cb[0], key, value))
+                __information[key] = value
+        except:
+            logger.error("Check information error. Key:%s, Value: %s" % (key, str(value)))
 
     for c in callbacks:
         c[0](c[1], c[2])
