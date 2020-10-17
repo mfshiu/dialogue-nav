@@ -58,16 +58,16 @@ class UserListener(threading.Thread):
         # print((RATE / chunk) * RECORD_SECONDS)
         head_voice_count = 0
         rear_zero_count = 0
-        start_voice = False
+        is_start_speaking = False
         total = RATE // chunk * limit_seconds
-        silence_count = RATE // chunk * 0.5
+        silence_count = RATE // chunk * 0.25
         logger.debug("Total chunk: " + str(total) + ", Silence chunk: " + str(silence_count))
         for i in range(0, total):
             data = audio_stream.read(chunk)
 
             # Check silence
             cnt = data.count(0)
-            if start_voice:
+            if is_start_speaking:
                 if cnt < VOICE_THRESHOLD:
                     rear_zero_count = 0
                 else:
@@ -81,7 +81,7 @@ class UserListener(threading.Thread):
                 else:
                     head_voice_count = 0
                 if head_voice_count > 2:
-                    start_voice = True
+                    is_start_speaking = True
                     logger.debug("Start voice, i = " + str(i))
             if cnt < VOICE_THRESHOLD:
                 d.append(data)

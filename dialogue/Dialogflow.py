@@ -1,6 +1,8 @@
 import dialogflow_v2 as dialogflow
 import os
 from dialogue import Helper
+from dialogue.Helper import get_module_logger
+logger = get_module_logger(__name__)
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue/NCU-AI-5e22fe333aae.json"
 
@@ -38,7 +40,7 @@ def __detect_intent_texts(project_id, session_id, texts, language_code):
 
 def __detect_intent_stream(project_id, session_id, audio_file_path,
                            language_code):
-    # print('audio_file_path: {}\n'.format(audio_file_path))
+    logger.info('__detect_intent_stream: audio_file_path: %s', audio_file_path)
 
     """Returns the result of detect intent with streaming audio as input.
 
@@ -77,22 +79,25 @@ def __detect_intent_stream(project_id, session_id, audio_file_path,
         audio_encoding=audio_encoding, language_code=language_code,
         sample_rate_hertz=sample_rate_hertz)
 
+    logger.debug("generate request...")
     requests = request_generator(audio_config, audio_file_path)
+    logger.debug("send request...")
     responses = session_client.streaming_detect_intent(requests)
+    logger.debug("responsed...")
 
-    print('=' * 20)
+    logger.debug('=' * 20)
     for response in responses:
-        print('Intermediate transcript: "{}".'.format(
+        logger.debug('Intermediate transcript: "{}".'.format(
                 response.recognition_result.transcript))
     # Note: The result from the last response is the final transcript along
     # with the detected content.
     query_result = response.query_result
-    print('=' * 20)
-    print('Query text: {}'.format(query_result.query_text))
-    print('Detected intent: {} (confidence: {})\n'.format(
+    logger.debug('=' * 20)
+    logger.debug('Query text: {}'.format(query_result.query_text))
+    logger.debug('Detected intent: {} (confidence: {})\n'.format(
         query_result.intent.display_name,
         query_result.intent_detection_confidence))
-    print('Fulfillment text: {}\n'.format(
+    logger.debug('Fulfillment text: {}\n'.format(
         query_result.fulfillment_text))
 
     return query_result
