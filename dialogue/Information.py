@@ -9,6 +9,12 @@ __information = dict()
 __callbacks = dict()
 __running = False
 logger.debug("__init__")
+sub3_keys = ["location",
+             "awakable",
+             "sub1_destination",
+             "sub1_arrived",
+             "in_outdoor_status",
+             "user_speaking"]
 
 
 def __run():
@@ -25,6 +31,8 @@ def __update():
     callbacks = []
     global return_dict
     for key, value in return_dict.items():
+        if key not in sub3_keys:
+            continue
         try:
             if key not in __information or __information[key] != value:
                 if key in __callbacks:
