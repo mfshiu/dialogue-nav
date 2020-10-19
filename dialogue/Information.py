@@ -35,14 +35,18 @@ def __update():
         if key not in sub3_keys:
             continue
         try:
-            if key not in __information or Helper.is_equal(__information[key], value):
+            original = None
+            if key not in __information or not Helper.is_equal(__information[key], value):
+                if key in __information:
+                    original = __information[key]
                 if key in __callbacks:
                     cb = __callbacks[key]
                     if 'any' == cb[1] or value == cb[1]:
                         callbacks.append((cb[0], key, value))
                 __information[key] = value
+                logger.debug("Information is changed. Key: %s, %s -> %s" % (key, str(original), str(value)))
         except:
-            logger.error("Check information error. Key:%s, Value: %s" % (key, str(value)))
+            logger.error("Check information error. Key: %s, Value: %s" % (key, str(value)))
 
     for c in callbacks:
         c[0](c[1], c[2])
