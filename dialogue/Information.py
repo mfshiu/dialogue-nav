@@ -76,6 +76,16 @@ def get_indoor_destination():
     return get_return_dict("sub4_destination")
 
 
+def get_location():
+    # return 25.0230239, 121.2210628
+    result = None
+    if "location" in __information:
+        loc = __information["location"]
+        if not loc is None:
+            result = __information["location"][0]
+    return result
+
+
 def get_outdoor_destination():
     return get_return_dict("sub1_destination")
 
@@ -135,8 +145,8 @@ def stop_indoor_destination():
     set_return_dict('sub4_arrived', True)
 
 
-def set_outdoor_destination(coordinate):
-    set_return_dict('sub1_destination', coordinate)
+def set_outdoor_destination(coordinate, dest_type):
+    set_return_dict('sub1_destination', (coordinate[0], coordinate[1], dest_type))
     set_return_dict('sub1_arrived', False)
 
 

@@ -1,5 +1,5 @@
 import queue
-from dialogue import Speaker, UserListener, Information, UserProcessor, Dialogflow
+from dialogue import Speaker, UserListener, Information, UserProcessor, Dialogflow, NavHelper
 
 from dialogue.Helper import get_module_logger
 logger = get_module_logger(__name__)
@@ -51,7 +51,8 @@ class DialogueClient:
 
     def add_destination(self, dest):
         self.destinations.append(dest)
-        Information.set_outdoor_destination(dest.coordinate)
+        dest_type = NavHelper.parse_destination_type(dest.name)
+        Information.set_outdoor_destination(dest.coordinate, dest_type)
 
     def ask_user(self, words):
         Dialogflow.send_text(words)
