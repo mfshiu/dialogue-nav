@@ -1,5 +1,6 @@
 import threading
 import time
+import dialogue.Helper as Helper
 
 from dialogue.Helper import get_module_logger
 logger = get_module_logger(__name__)
@@ -34,7 +35,7 @@ def __update():
         if key not in sub3_keys:
             continue
         try:
-            if key not in __information or __information[key] != value:
+            if key not in __information or Helper.is_equal(__information[key], value):
                 if key in __callbacks:
                     cb = __callbacks[key]
                     if 'any' == cb[1] or value == cb[1]:
@@ -47,6 +48,26 @@ def __update():
         c[0](c[1], c[2])
 
 
+# def __update():
+#     callbacks = []
+#     global return_dict
+#     for key, value in return_dict.items():
+#         if key not in sub3_keys:
+#             continue
+#         try:
+#             if key not in __information or __information[key] != value:
+#                 if key in __callbacks:
+#                     cb = __callbacks[key]
+#                     if 'any' == cb[1] or value == cb[1]:
+#                         callbacks.append((cb[0], key, value))
+#                 __information[key] = value
+#         except:
+#             logger.error("Check information error. Key:%s, Value: %s" % (key, str(value)))
+#
+#     for c in callbacks:
+#         c[0](c[1], c[2])
+#
+#
 def get_indoor_destination():
     return get_return_dict("sub4_destination")
 

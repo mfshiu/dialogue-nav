@@ -51,3 +51,15 @@ def get_module(package_name, module_name):
 def is_debug():
     gettrace = getattr(sys, 'gettrace', None)
     return gettrace is not None
+
+
+def is_equal(a, b):
+    if a is None or b is None:
+        return False
+    if type(a) != type(b):
+        return False
+    if hasattr(a, '__len__'):
+        if len(a) != len(b):
+            return False
+        return str(a) == str(b)
+    return a == b
