@@ -20,14 +20,15 @@ sub3_keys = ["location",
 
 
 def __log_timer():
-    logger.debug("Information values ==>")
-    for key in sub3_keys:
-        value = None
-        if key in return_dict:
-            value = return_dict[key]
-        logger.debug("%20s: %s", key, str(value))
-    if __running:
-        Timer(5, __log_timer).start()
+    a = 0
+    # logger.debug("Information values ==>")
+    # for key in sub3_keys:
+    #     value = None
+    #     if key in return_dict:
+    #         value = return_dict[key]
+    #     logger.debug("%20s: %s", key, str(value))
+    # if __running:
+    #     Timer(5, __log_timer).start()
 
 
 def __run():
