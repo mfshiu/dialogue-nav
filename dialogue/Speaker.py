@@ -2,8 +2,7 @@ from datetime import datetime
 from playsound import playsound
 import os
 import threading
-# import subprocess
-# import sys
+from dialogue import Information
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue//NCU-AI-5e22fe333aae.json" # visible in this process + all children
 # subprocess.check_call(['sqsub', '-np', sys.argv[1], '/path/to/executable'],
@@ -45,10 +44,13 @@ def __do_play(msg):
     try:
         audio_content = __tts(msg)
         output_file = __generate_sound_file(audio_content)
+        Information.set_user_speaking(True)
         playsound(output_file)
         os.remove(output_file)
     except:
         print("Play sound error: ", output_file)
+    finally:
+        Information.set_user_speaking(False)
 
 
 def __tts(msg):
@@ -84,7 +86,9 @@ def play_async(msg):
 
 def play_sound(sound_file):
     if not is_muted:
+        Information.set_user_speaking(True)
         playsound(sound_file)
+        Information.set_user_speaking(False)
 
 
 def save(msg, file_path):

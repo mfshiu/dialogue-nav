@@ -1,6 +1,7 @@
 import threading
 import time
 import dialogue.Helper as Helper
+from threading import Timer
 
 from dialogue.Helper import get_module_logger
 logger = get_module_logger(__name__)
@@ -18,9 +19,21 @@ sub3_keys = ["location",
              "user_speaking"]
 
 
+def __log_timer():
+    logger.debug("Information values ==>")
+    for key in sub3_keys:
+        value = None
+        if key in return_dict:
+            value = return_dict[key]
+        logger.debug("%20s: %s", key, str(value))
+    if __running:
+        Timer(5, __log_timer).start()
+
+
 def __run():
     global __running
     __running = True
+    Timer(3, __log_timer).start()
     while __running:
         __update()
         time.sleep(1)
@@ -148,6 +161,10 @@ def stop_indoor_destination():
 def set_outdoor_destination(coordinate, dest_type):
     set_return_dict('sub1_destination', (coordinate[0], coordinate[1], dest_type))
     set_return_dict('sub1_arrived', False)
+
+
+def set_user_speaking(is_speaking):
+    set_return_dict('user_speaking', is_speaking)
 
 
 def stop_outdoor_destination():

@@ -1,5 +1,5 @@
 import threading
-from dialogue import HotWord, Speaker
+from dialogue import HotWord, Speaker, Information
 import time
 import pyaudio
 import wave
@@ -127,7 +127,9 @@ class UserListener(threading.Thread):
         while self.running:
             if self.job_count > 0:
                 Speaker.mute()
+                Information.set_user_speaking(True)
                 self.__record(self.limit_seconds)
+                Information.set_user_speaking(False)
                 Speaker.unmute()
                 self.job_count = 0
                 time.sleep(1)

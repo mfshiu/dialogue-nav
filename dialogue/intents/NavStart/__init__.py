@@ -6,7 +6,7 @@ destination = None
 
 def __find_place(place):
     name, coord, dist = map.get_nearest_place(place)
-    if name is None or dist > 300:
+    if name is None or dist > 3000:
         return None
     else:
         return Destination(name, coord, dist)
