@@ -118,10 +118,13 @@ def get_return_dict(name):
     if return_dict is None:
         return None
 
-    if name in return_dict:
-        return return_dict[name]
-    else:
-        return None
+    try:
+        if name in return_dict:
+            return return_dict[name]
+        else:
+            return None
+    except:
+        logger.error("get_return_dict error. name: %s", name)
 
 
 def is_indoor():
@@ -183,8 +186,12 @@ def stop_outdoor_destination():
 
 def set_return_dict(name, value):
     global return_dict
-    if return_dict is not None:
-        return_dict[name] = value
+
+    try:
+        if return_dict is not None:
+            return_dict[name] = value
+    except:
+        logger.error("set_return_dict error. name: %s, value: %s", name, str(value))
 
 
 def start(source_return_dict):
