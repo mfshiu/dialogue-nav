@@ -1,5 +1,5 @@
 import threading
-from dialogue import HotWord, Speaker, Information
+from dialogue import Speaker
 import time
 import pyaudio
 import wave
@@ -25,16 +25,6 @@ class UserListener2(threading.Thread):
         self.running = True
         self.speaking = False
         self.user_words = args[0]
-
-    def __detected_hotword(self):
-        logger.debug("Hotword is detected.")
-        self.__stop_listen_hotword()
-        Speaker.play_sound("./dialogue/resources/where_to_go.mp3")
-        self.listen()
-
-    def __stop_listen_hotword(self):
-        logger.info("Stop listen hot word")
-        HotWord.stop_listen()
 
     def __record(self):
         logger.info("---recording---")
