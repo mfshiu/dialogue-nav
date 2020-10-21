@@ -46,6 +46,9 @@ def __run():
 def __update():
     callbacks = []
     global return_dict
+    if return_dict is None:
+        return
+
     for key, value in return_dict.items():
         if key not in sub3_keys:
             continue
@@ -111,6 +114,10 @@ def get_info(name):
 
 def get_return_dict(name):
     global return_dict
+
+    if return_dict is None:
+        return None
+
     if name in return_dict:
         return return_dict[name]
     else:
