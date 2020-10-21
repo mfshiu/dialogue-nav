@@ -3,14 +3,13 @@ from playsound import playsound
 import os
 import threading
 from dialogue import Information
-
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue//NCU-AI-5e22fe333aae.json" # visible in this process + all children
-# subprocess.check_call(['sqsub', '-np', sys.argv[1], '/path/to/executable'],
-#                       env=dict(os.environ, SQSUB_VAR="visible in this subprocess"))
 from google.cloud import texttospeech
 from dialogue.Helper import get_module_logger
 logger = get_module_logger(__name__)
 
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue//NCU-AI-5e22fe333aae.json" # visible in this process + all children
+# subprocess.check_call(['sqsub', '-np', sys.argv[1], '/path/to/executable'],
+#                       env=dict(os.environ, SQSUB_VAR="visible in this subprocess"))
 
 client = texttospeech.TextToSpeechClient()
 
@@ -34,13 +33,13 @@ def __generate_sound_file(audio_content, file_path=None):
     with open(file_path, "wb") as out:
         # Write the response to the output file.
         out.write(audio_content)
-        print('Audio content written to file: ' + file_path)
+        logger.debug('Audio content written to file: %s', file_path)
 
     return file_path
 
 
 def __do_play(msg):
-    logger.debug("Speak:", msg)
+    logger.debug("Speak: %s", msg)
 
     output_file = ""
     try:
@@ -50,7 +49,7 @@ def __do_play(msg):
         playsound(output_file)
         os.remove(output_file)
     except:
-        print("Play sound error: ", output_file)
+        logger.error("Play sound error: %s", output_file)
     finally:
         Information.set_user_speaking(False)
 
@@ -99,4 +98,4 @@ def save(msg, file_path):
         audio_content = __tts(msg)
         __generate_sound_file(audio_content, file_path)
     except:
-        logger.debug("Save sound error: ", file_path)
+        logger.debug("Save sound error: %s", file_path)
