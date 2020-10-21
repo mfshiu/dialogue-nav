@@ -50,9 +50,12 @@ class UserListener(threading.Thread):
             logger.warn("Waiting hot word stop.")
             time.sleep(1)
 
+
         audio = pyaudio.PyAudio()
+        logger.info("---recording: 1")
         audio_stream = audio.open(format=FORMAT, channels=CHANNELS, rate=RATE,
                                        input=True, frames_per_buffer=chunk)
+        logger.info("---recording: 2")
 
         d = []
         # print((RATE / chunk) * RECORD_SECONDS)
