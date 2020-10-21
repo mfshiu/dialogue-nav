@@ -78,6 +78,8 @@ class DialogueClient:
         self.is_terminated = True
 
     def start(self, return_dict):
+        Speaker.play_async("HI，我叫小美，你好。")
+
         self._user_listener = UserListener2.UserListener2(args=(self.user_words,))
         self._user_listener.start()
 
@@ -89,8 +91,6 @@ class DialogueClient:
         Information.start(return_dict)
 
         self.is_terminated = False
-
-        Speaker.play_async("HI，我叫小美，你好。")
         # Speaker.play_async("歡迎使用視障者的智慧伙伴，我叫小美，請呼叫我的名字，我可以帶你去想去的地方。")
 
     def standby(self, prompt=False):
