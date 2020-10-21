@@ -32,7 +32,7 @@ class UserListener(threading.Thread):
         self.user_words = args[0]
 
     def __detected_hotword(self):
-        logger.debug("__detected_hotword")
+        logger.debug("Hotword is detected.")
         self.__stop_listen_hotword()
         Speaker.play_sound("./dialogue/resources/where_to_go.mp3")
         self.listen()

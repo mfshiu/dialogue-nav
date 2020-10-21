@@ -12,7 +12,7 @@ from contextlib import contextmanager
 
 logging.basicConfig()
 logger = logging.getLogger("snowboy")
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 TOP_DIR = os.path.dirname(os.path.abspath(__file__))
 
 RESOURCE_FILE = os.path.join(TOP_DIR, "resources/common.res")

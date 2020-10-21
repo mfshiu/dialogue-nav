@@ -1,7 +1,7 @@
 from dialogue import snowboydecoder
 
-# import sys
-# import threading
+from dialogue.Helper import get_module_logger
+logger = get_module_logger(__name__)
 
 interrupted = False
 listening = False
@@ -18,8 +18,9 @@ def is_listening():
 
 
 def start_listen(model, detected_callback):
+    logger.info("Start listen")
     if is_listening():
-        print('Warning: Hotword detector is listening.')
+        logger.warning('Hotword detector is listening.')
         return
 
     global interrupted
@@ -40,5 +41,6 @@ def start_listen(model, detected_callback):
 
 
 def stop_listen():
+    logger.debug("Stop listen")
     global interrupted
     interrupted = True

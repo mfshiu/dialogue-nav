@@ -8,6 +8,8 @@ os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue//NCU-AI-5e22fe333aae.
 # subprocess.check_call(['sqsub', '-np', sys.argv[1], '/path/to/executable'],
 #                       env=dict(os.environ, SQSUB_VAR="visible in this subprocess"))
 from google.cloud import texttospeech
+from dialogue.Helper import get_module_logger
+logger = get_module_logger(__name__)
 
 
 client = texttospeech.TextToSpeechClient()
@@ -38,7 +40,7 @@ def __generate_sound_file(audio_content, file_path=None):
 
 
 def __do_play(msg):
-    print("Speak: " + msg)
+    logger.debug("Speak:", msg)
 
     output_file = ""
     try:
@@ -85,6 +87,7 @@ def play_async(msg):
 
 
 def play_sound(sound_file):
+    logger.debug("Play sound: %s, is muted: %s", sound_file, is_muted)
     if not is_muted:
         Information.set_user_speaking(True)
         playsound(sound_file)
@@ -96,4 +99,4 @@ def save(msg, file_path):
         audio_content = __tts(msg)
         __generate_sound_file(audio_content, file_path)
     except:
-        print("Save sound error: ", file_path)
+        logger.debug("Save sound error: ", file_path)
