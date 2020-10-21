@@ -49,8 +49,9 @@ class Sub3(threading.Thread):
 
 
 if __name__ == '__main__':
-    manager = Manager()
-    sub3 = Sub3(manager.dict(), is_simulation=False)
+    # manager = Manager()
+    # sub3 = Sub3(manager.dict(), is_simulation=False)
+    sub3 = Sub3(dict(), is_simulation=False)
 
     def signal_handler(signal, frame):
         sub3.terminate()
