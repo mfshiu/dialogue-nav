@@ -70,6 +70,7 @@ class DialogueClient:
         self._user_listener.listen()
 
     def shutdown(self):
+        Speaker.play("再見")
         Information.terminate()
         self._user_processor.terminate()
         self._user_listener.terminate()
@@ -88,7 +89,8 @@ class DialogueClient:
 
         self.is_terminated = False
 
-        Speaker.play_async("歡迎使用視障者的智慧伙伴，我叫小美，請呼叫我的名字，我可以帶你去想去的地方。")
+        Speaker.play_async("HI,你好。")
+        # Speaker.play_async("歡迎使用視障者的智慧伙伴，我叫小美，請呼叫我的名字，我可以帶你去想去的地方。")
 
     def standby(self, prompt=True):
         logger.info("Standby")

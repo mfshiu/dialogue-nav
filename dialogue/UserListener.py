@@ -50,12 +50,9 @@ class UserListener(threading.Thread):
             logger.warn("Waiting hot word stop.")
             time.sleep(1)
 
-
         audio = pyaudio.PyAudio()
-        logger.info("---recording: 1")
         audio_stream = audio.open(format=FORMAT, channels=CHANNELS, rate=RATE,
-                                       input=True, frames_per_buffer=chunk)
-        logger.info("---recording: 2")
+                                  input=True, frames_per_buffer=chunk)
 
         d = []
         # print((RATE / chunk) * RECORD_SECONDS)
@@ -66,6 +63,7 @@ class UserListener(threading.Thread):
         silence_count = RATE // chunk * 0.25
         logger.debug("Total chunk: " + str(total) + ", Silence chunk: " + str(silence_count))
         for i in range(0, total):
+            time.sleep(0.03)
             data = audio_stream.read(chunk)
 
             # Check silence
