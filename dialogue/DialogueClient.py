@@ -1,5 +1,5 @@
 import queue
-from dialogue import Speaker, UserListener, Information, UserProcessor, Dialogflow, NavHelper
+from dialogue import Speaker, UserListener2, Information, UserProcessor, Dialogflow, NavHelper
 
 from dialogue.Helper import get_module_logger
 logger = get_module_logger(__name__)
@@ -41,13 +41,13 @@ class DialogueClient:
         else:
             Speaker.play("您已經在室內")
             Information.set_return_dict("in_outdoor_status", True)
-            self.standby()
+            self.standby(True)
 
     def __arrived_indoor(self, key, value):
         if Information.get_indoor_destination() is None:
             return
         # Speaker.play("您已經抵達" + dest.name)
-        self.standby()
+        self.standby(True)
 
     def add_destination(self, dest):
         self.destinations.append(dest)
@@ -67,17 +67,18 @@ class DialogueClient:
         return self._id
 
     def listen_user(self):
-        self._user_listener.listen()
+        a = 0
+        # self._user_listener.listen()
 
     def shutdown(self):
-        Speaker.play("再見")
+        Speaker.play("我會想你的")
         Information.terminate()
         self._user_processor.terminate()
         self._user_listener.terminate()
         self.is_terminated = True
 
     def start(self, return_dict):
-        self._user_listener = UserListener.UserListener(args=(self.user_words,))
+        self._user_listener = UserListener2.UserListener2(args=(self.user_words,))
         self._user_listener.start()
 
         self._user_processor = UserProcessor.UserProcessor(args=(self.user_words, self))
@@ -89,14 +90,14 @@ class DialogueClient:
 
         self.is_terminated = False
 
-        Speaker.play_async("HI,你好。")
+        Speaker.play_async("HI，我叫小美，你好。")
         # Speaker.play_async("歡迎使用視障者的智慧伙伴，我叫小美，請呼叫我的名字，我可以帶你去想去的地方。")
 
-    def standby(self, prompt=True):
+    def standby(self, prompt=False):
         logger.info("Standby")
         if prompt:
             Speaker.play_async("如果需要協助再呼叫我。")
-        self._user_listener.listen_hotword()
+        # self._user_listener.listen_hotword()
 
 
 if __name__ == '__main__':

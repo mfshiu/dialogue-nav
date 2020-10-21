@@ -16,6 +16,9 @@ client = texttospeech.TextToSpeechClient()
 global is_muted
 is_muted = False
 
+global _is_playing
+_is_playing = False
+
 voice = texttospeech.VoiceSelectionParams(
     language_code="zh-TW", ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL
 )
@@ -45,13 +48,25 @@ def __do_play(msg):
     try:
         audio_content = __tts(msg)
         output_file = __generate_sound_file(audio_content)
-        Information.set_user_speaking(True)
+        __start_playing()
         playsound(output_file)
         os.remove(output_file)
     except:
         logger.error("Play sound error: %s", output_file)
     finally:
-        Information.set_user_speaking(False)
+        __stop_playing()
+
+
+def __start_playing():
+    Information.set_user_speaking(True)
+    global _is_playing
+    _is_playing = True
+
+
+def __stop_playing():
+    Information.set_user_speaking(False)
+    global _is_playing
+    _is_playing = False
 
 
 def __tts(msg):
@@ -60,6 +75,10 @@ def __tts(msg):
         input=synthesis_input, voice=voice, audio_config=audio_config
     )
     return response.audio_content
+
+
+def is_playing():
+    return _is_playing
 
 
 def mute():
@@ -79,18 +98,19 @@ def play(msg):
 
 
 def play_async(msg):
-    if not is_muted:
-        t = threading.Thread(target=__do_play, args=(msg,))
-        t.start()
-    return
+    play(msg)
+    # if not is_muted:
+    #     t = threading.Thread(target=__do_play, args=(msg,))
+    #     t.start()
+    # return
 
 
 def play_sound(sound_file):
     logger.debug("Play sound: %s, is muted: %s", sound_file, is_muted)
     if not is_muted:
-        Information.set_user_speaking(True)
+        __start_playing()
         playsound(sound_file)
-        Information.set_user_speaking(False)
+        __stop_playing()
 
 
 def save(msg, file_path):

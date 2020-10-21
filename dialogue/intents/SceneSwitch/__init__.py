@@ -17,4 +17,4 @@ def implement_intent(client, query_result):
             Speaker.play("好的，已經切換到" + target)
         else:
             Speaker.play("很抱歉，我還不知道怎麼切換到" + target)
-        client.standby(prompt=False)
+        client.standby(True)

@@ -14,4 +14,4 @@ def implement_intent(client, query_result):
             Information.stop_outdoor_destination()
             msg = "好的，己停止前往" + dest.name
             Speaker.play(msg)
-    client.standby()
+    client.standby(True)

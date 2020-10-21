@@ -7,6 +7,7 @@ from dialogue.Helper import get_module_logger
 logger = get_module_logger(__name__)
 
 global return_dict
+return_dict = None
 __information = dict()
 __callbacks = dict()
 __running = False
@@ -175,7 +176,8 @@ def stop_outdoor_destination():
 
 def set_return_dict(name, value):
     global return_dict
-    return_dict[name] = value
+    if return_dict is not None:
+        return_dict[name] = value
 
 
 def start(source_return_dict):

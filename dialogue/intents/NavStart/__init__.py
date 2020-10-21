@@ -16,11 +16,11 @@ def __process_indoor(client, target):
     dest = Information.parse_indoor_destination(target)
     if dest is None:
         Speaker.play("很抱歉，目前我還不知道怎麼帶你去" + target)
-        client.standby()
+        client.standby(True)
     else:
         Speaker.play("好的，我現在開始找尋附近的" + target)
         Information.set_indoor_destination(dest)
-        client.standby(prompt=False)
+        client.standby()
 
 
 def __process_outdoor(client, target):
