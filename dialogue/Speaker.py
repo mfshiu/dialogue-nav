@@ -7,7 +7,8 @@ from google.cloud import texttospeech
 from dialogue.Helper import get_module_logger
 logger = get_module_logger(__name__)
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue//NCU-AI-5e22fe333aae.json" # visible in this process + all children
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue//vin-gmsx-ad3eb9c8c7e6.json"
+# os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue//NCU-AI-5e22fe333aae.json"
 # subprocess.check_call(['sqsub', '-np', sys.argv[1], '/path/to/executable'],
 #                       env=dict(os.environ, SQSUB_VAR="visible in this subprocess"))
 
