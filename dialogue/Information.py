@@ -23,15 +23,15 @@ sub3_keys = ["location",
 
 
 def __log_timer():
-    a = 0
-    # logger.debug("Information values ==>")
-    # for key in sub3_keys:
-    #     value = None
-    #     if key in return_dict:
-    #         value = return_dict[key]
-    #     logger.debug("%20s: %s", key, str(value))
-    # if __running:
-    #     Timer(5, __log_timer).start()
+    # a = 0
+    logger.debug("Information values ==>")
+    for key in sub3_keys:
+        value = None
+        if key in return_dict:
+            value = return_dict[key]
+        logger.debug("%20s: %s", key, str(value))
+    if __running:
+        Timer(5, __log_timer).start()
 
 
 def __run():
@@ -189,11 +189,11 @@ def stop_outdoor_destination():
 
 
 def set_return_dict(name, value):
-    global return_dict2
+    global return_dict
 
     try:
-        if return_dict2 is not None:
-            return_dict2[name] = value
+        if return_dict is not None:
+            return_dict[name] = value
     except:
         logger.error("set_return_dict error. name: %s, value: %s", name, str(value))
 
