@@ -17,7 +17,8 @@ sub3_keys = ["location",
              "sub1_destination",
              "sub1_arrived",
              "in_outdoor_status",
-             "user_speaking"]
+             "user_speaking",
+             "kanban_indoor"]
 
 
 def __log_timer():
