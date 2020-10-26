@@ -2,6 +2,7 @@ import threading
 import time
 import dialogue.Helper as Helper
 from threading import Timer
+import copy
 
 from dialogue.Helper import get_module_logger
 logger = get_module_logger(__name__)
@@ -53,7 +54,8 @@ def __update():
         return
 
     global return_dict2
-    return_dict2 = return_dict.copy()
+    # return_dict2 = return_dict.copy()
+    return_dict2 = copy.deepcopy(return_dict)
     for key, value in return_dict2.items():
         if key not in sub3_keys:
             continue
