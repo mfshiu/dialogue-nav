@@ -212,7 +212,7 @@ def start(source_return_dict):
     set_return_dict('sub1_arrived', True)
     set_return_dict('sub4_destination', None)
     set_return_dict('sub4_arrived', True)
-    set_return_dict('in_outdoor_status', False)
+    set_return_dict('in_outdoor_status', True)
 
     t = threading.Thread(target=__run)
     t.start()
