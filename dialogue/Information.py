@@ -8,6 +8,7 @@ logger = get_module_logger(__name__)
 
 global return_dict
 return_dict = None
+return_dict2 = None
 __information = dict()
 __callbacks = dict()
 __running = False
@@ -50,7 +51,9 @@ def __update():
     if return_dict is None:
         return
 
-    for key, value in return_dict.items():
+    global return_dict2
+    return_dict2 = return_dict.copy()
+    for key, value in return_dict2.items():
         if key not in sub3_keys:
             continue
         try:
@@ -114,14 +117,14 @@ def get_info(name):
 
 
 def get_return_dict(name):
-    global return_dict
+    global return_dict2
 
-    if return_dict is None:
+    if return_dict2 is None:
         return None
 
     try:
-        if name in return_dict:
-            return return_dict[name]
+        if name in return_dict2:
+            return return_dict2[name]
         else:
             return None
     except:
@@ -186,11 +189,11 @@ def stop_outdoor_destination():
 
 
 def set_return_dict(name, value):
-    global return_dict
+    global return_dict2
 
     try:
-        if return_dict is not None:
-            return_dict[name] = value
+        if return_dict2 is not None:
+            return_dict2[name] = value
     except:
         logger.error("set_return_dict error. name: %s, value: %s", name, str(value))
 
@@ -198,6 +201,8 @@ def set_return_dict(name, value):
 def start(source_return_dict):
     global return_dict
     return_dict = source_return_dict
+
+    __update()
 
     # init return_dict
     # set_return_dict('sub1_destination', (0, 0))
