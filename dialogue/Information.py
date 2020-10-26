@@ -24,11 +24,12 @@ sub3_keys = ["location",
 
 def __log_timer():
     # a = 0
+    global return_dict2
     logger.debug("Information values ==>")
     for key in sub3_keys:
         value = None
-        if key in return_dict:
-            value = return_dict[key]
+        if key in return_dict2:
+            value = return_dict2[key]
         logger.debug("%20s: %s", key, str(value))
     if __running:
         Timer(5, __log_timer).start()
