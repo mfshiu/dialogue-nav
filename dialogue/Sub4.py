@@ -18,10 +18,10 @@ class Sub4(threading.Thread):
         return
 
     def cancel_destination(self):
-        dest = Information.get_return_dict('sub4_destination')
+        dest = Information.get_information('sub4_destination')
         if dest is not None:
             Speaker.play("己停止前往" + dest)
-        Information.set_return_dict("sub4_arrived", True)
+        Information.set_information("sub4_arrived", True)
 
     def gen_direction_text(self, direction):
         directions = {
@@ -37,7 +37,7 @@ class Sub4(threading.Thread):
         return directions[direction]
 
     def get_kanban(self, kanban_name):
-        viewed_kanbans = Information.get_return_dict('kanban_indoor')
+        viewed_kanbans = Information.get_information('kanban_indoor')
         if viewed_kanbans is None:
             return None
         for kanban in viewed_kanbans:
@@ -65,13 +65,13 @@ class Sub4(threading.Thread):
         if self.sim_kanbans_index >= len(self.sim_kanbans):
             self.sim_kanbans_index = 0
         kanban = self.sim_kanbans[self.sim_kanbans_index]
-        Information.set_return_dict("kanban_indoor", kanban)
+        Information.set_information("kanban_indoor", kanban)
         # logger.debug("Viewed kanbans: %s", json.dumps(kanban))
 
     def walk_timer(self):
-        arrived = Information.get_return_dict('sub4_arrived')
+        arrived = Information.get_information('sub4_arrived')
         if not arrived:
-            dest = Information.get_return_dict('sub4_destination')
+            dest = Information.get_information('sub4_destination')
             kanban_name = Information.get_indoor_destination_text(dest)
             kanban = self.get_kanban(dest)
             if kanban is not None:
@@ -80,7 +80,7 @@ class Sub4(threading.Thread):
                     if float(distance) < 1.5:
                         logger.warn("Arrived.")
                         Speaker.play("您已經抵達" + kanban_name)
-                        Information.set_return_dict("sub4_arrived", True)
+                        Information.set_information("sub4_arrived", True)
                     else:
                         self.speak_kanban(kanban)
                 else:

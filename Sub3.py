@@ -6,6 +6,8 @@ from dialogue.DialogueClient import DialogueClient
 from multiprocessing import Manager
 from dialogue.Sub1 import Sub1
 from dialogue.Sub4 import Sub4
+from dialogue import Information
+
 
 logger = Helper.get_module_logger(__name__)
 
@@ -39,6 +41,9 @@ class Sub3(threading.Thread):
             self.dialogue_client.shutdown()
         logger.info("terminated")
         return
+
+    def update_kanbans(self, kanbans):
+        Information.set_indoor_kanbans(kanbans)
 
     def terminate(self):
         self.running = False

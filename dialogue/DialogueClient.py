@@ -1,5 +1,5 @@
 import queue
-from dialogue import Speaker, UserListener2, Information, UserProcessor, Dialogflow, NavHelper
+from dialogue import Speaker, UserListener, Information, UserProcessor, Dialogflow, NavHelper
 
 from dialogue.Helper import get_module_logger
 logger = get_module_logger(__name__)
@@ -40,7 +40,7 @@ class DialogueClient:
             Information.set_outdoor_destination(next_dest.coordinate)
         else:
             Speaker.play("您已經在室內")
-            Information.set_return_dict("in_outdoor_status", True)
+            Information.set_information("in_outdoor_status", True)
             self.standby(True)
 
     def __arrived_indoor(self, key, value):
@@ -67,8 +67,7 @@ class DialogueClient:
         return self._id
 
     def listen_user(self):
-        a = 0
-        # self._user_listener.listen()
+        self._user_listener.listen()
 
     def shutdown(self):
         Speaker.play("我會想你的")
@@ -80,7 +79,7 @@ class DialogueClient:
     def start(self, return_dict):
         Speaker.play_async("HI，我叫小美，你好。")
 
-        self._user_listener = UserListener2.UserListener2(args=(self.user_words,))
+        self._user_listener = UserListener.UserListener(args=(self.user_words,))
         self._user_listener.start()
 
         self._user_processor = UserProcessor.UserProcessor(args=(self.user_words, self))
@@ -97,7 +96,7 @@ class DialogueClient:
         logger.info("Standby")
         if prompt:
             Speaker.play_async("如果需要協助再呼叫我。")
-        # self._user_listener.listen_hotword()
+        self._user_listener.listen_hotword()
 
 
 if __name__ == '__main__':

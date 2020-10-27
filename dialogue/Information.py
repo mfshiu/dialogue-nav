@@ -9,29 +9,17 @@ logger = get_module_logger(__name__)
 
 global return_dict
 return_dict = None
-return_dict2 = None
 __information = dict()
+__changed = dict()
 __callbacks = dict()
 __running = False
 logger.debug("__init__")
-sub3_keys = ["location",
-             "awakable",
-             "sub1_destination",
-             "sub1_arrived",
-             "in_outdoor_status",
-             "user_speaking",
-             "kanban_indoor",
-             "sub4_arrived"]
 
 
 def __log_timer():
-    # a = 0
-    global return_dict2
     logger.debug("Information values ==>")
-    for key in sub3_keys:
-        value = None
-        if key in return_dict2:
-            value = return_dict2[key]
+    for key in __information:
+        value = __information[key]
         logger.debug("%20s: %s", key, str(value))
     if __running:
         Timer(5, __log_timer).start()
@@ -42,64 +30,57 @@ def __run():
     __running = True
     Timer(3, __log_timer).start()
     while __running:
-        __update()
+        __update_from()
+        __update_to()
         time.sleep(1)
 
     logger.info("terminated")
 
 
-def __update():
+def __update_from():
     callbacks = []
     global return_dict
     if return_dict is None:
         return
 
-    global return_dict2
-    # return_dict2 = return_dict.copy()
-    return_dict2 = copy.deepcopy(return_dict)
-    for key, value in return_dict2.items():
-        if key not in sub3_keys:
-            continue
-        try:
-            original = None
-            if key not in __information or not Helper.is_equal(__information[key], value):
-                if key in __information:
-                    original = __information[key]
-                if key in __callbacks:
-                    cb = __callbacks[key]
-                    if 'any' == cb[1] or value == cb[1]:
-                        callbacks.append((cb[0], key, value))
-                __information[key] = value
-                logger.debug("Information is changed. Key: %s, %s -> %s" % (key, str(original), str(value)))
-        except:
-            logger.error("Check information error. Key: %s, Value: %s" % (key, str(value)))
+    # Store changed values to new_values
+    dic = copy.deepcopy(return_dict)
+    new_values = {}
+    for key in __information:
+        if key in dic:
+            value = dic[key]
+            if not Helper.is_equal(__information[key], value):
+                new_values[key] = value
 
+    # Append callback and update information
+    for key in new_values:
+        value = new_values[key]
+        if key in __callbacks:
+            cb = __callbacks[key]
+            if 'any' == cb[1] or Helper.is_equal(value, cb[1]):
+                callbacks.append((cb[0], key, value))
+        logger.debug("Information is changed. Key: %s, %s -> %s"
+                     % (key, str(__information[key]), str(value)))
+        __information[key] = value
+
+    # Raise callback
     for c in callbacks:
         c[0](c[1], c[2])
 
 
-# def __update():
-#     callbacks = []
-#     global return_dict
-#     for key, value in return_dict.items():
-#         if key not in sub3_keys:
-#             continue
-#         try:
-#             if key not in __information or __information[key] != value:
-#                 if key in __callbacks:
-#                     cb = __callbacks[key]
-#                     if 'any' == cb[1] or value == cb[1]:
-#                         callbacks.append((cb[0], key, value))
-#                 __information[key] = value
-#         except:
-#             logger.error("Check information error. Key:%s, Value: %s" % (key, str(value)))
-#
-#     for c in callbacks:
-#         c[0](c[1], c[2])
-#
-#
+def __update_to():
+    global return_dict
+    for key in __changed:
+        try:
+            return_dict[key] = __changed[key]
+        except:
+            logger.error("Update return_dict error, key: %s, new value: %s",
+                         key, str(__changed[key]))
+    __changed.clear()
+
+
 def get_indoor_destination():
-    return get_return_dict("sub4_destination")
+    return get_information("sub4_destination")
 
 
 def get_location():
@@ -113,30 +94,21 @@ def get_location():
 
 
 def get_outdoor_destination():
-    return get_return_dict("sub1_destination")
+    return get_information("sub1_destination")
 
 
-def get_info(name):
-    return __information[name]
-
-
-def get_return_dict(name):
-    global return_dict2
-
-    if return_dict2 is None:
-        return None
-
+def get_information(name):
     try:
-        if name in return_dict2:
-            return return_dict2[name]
+        if name in __information:
+            return __information[name]
         else:
             return None
     except:
-        logger.error("get_return_dict error. name: %s", name)
+        logger.error("get_information error. name: %s", name)
 
 
 def is_indoor():
-    return get_return_dict("in_outdoor_status")
+    return get_information("in_outdoor_status")
 
 
 def get_indoor_destination_text(name):
@@ -169,51 +141,54 @@ def parse_indoor_destination(destination_name):
 
 
 def set_indoor_destination(dest):
-    set_return_dict('sub4_destination', dest)
-    set_return_dict('sub4_arrived', False)
+    set_information('sub4_destination', dest)
+    set_information('sub4_arrived', False)
 
 
 def stop_indoor_destination():
-    set_return_dict('sub4_destination', None)
-    set_return_dict('sub4_arrived', True)
+    set_information('sub4_destination', None)
+    set_information('sub4_arrived', True)
 
 
 def set_outdoor_destination(coordinate, dest_type):
-    set_return_dict('sub1_destination', (coordinate[0], coordinate[1], dest_type))
-    set_return_dict('sub1_arrived', False)
+    set_information('sub1_destination', (coordinate[0], coordinate[1], dest_type))
+    set_information('sub1_arrived', False)
 
 
 def set_user_speaking(is_speaking):
-    set_return_dict('user_speaking', is_speaking)
+    set_information('user_speaking', is_speaking)
 
 
 def stop_outdoor_destination():
-    set_return_dict('sub1_destination', None)
-    set_return_dict('sub1_arrived', True)
+    set_information('sub1_destination', None)
+    set_information('sub1_arrived', True)
 
 
-def set_return_dict(name, value):
-    global return_dict
+def set_indoor_kanbans(kanbans):
+    set_information("kanban_indoor", kanbans)
 
+
+def set_information(name, value):
     try:
-        if return_dict is not None:
-            return_dict[name] = value
+        __information[name] = value
+        __changed[name] = value
     except:
-        logger.error("set_return_dict error. name: %s, value: %s", name, str(value))
+        logger.error("set_information error. name: %s, value: %s", name, str(value))
 
 
 def start(source_return_dict):
     global return_dict
     return_dict = source_return_dict
 
-    __update()
-
-    # init return_dict
-    # set_return_dict('sub1_destination', (0, 0))
-    set_return_dict('sub1_arrived', True)
-    set_return_dict('sub4_destination', None)
-    set_return_dict('sub4_arrived', True)
-    set_return_dict('in_outdoor_status', True)
+    set_information('awakable', True)
+    set_information('in_outdoor_status', True)
+    set_information('kanban_indoor', None)
+    set_information('location', None)
+    set_information('sub1_arrived', True)
+    set_information('sub1_destination', None)
+    set_information('sub4_arrived', True)
+    set_information('sub4_destination', None)
+    set_information('user_speaking', False)
 
     t = threading.Thread(target=__run)
     t.start()
@@ -221,7 +196,7 @@ def start(source_return_dict):
 
 def subscribe(name, callback, value="any"):
     __callbacks[name] = (callback, value)
-    logger.debug("subscribe(name, callback")
+    logger.debug("subscribe(name=%s, callback", name)
 
 
 def terminate():

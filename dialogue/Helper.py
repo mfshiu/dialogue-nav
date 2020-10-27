@@ -55,7 +55,7 @@ def is_debug():
 
 def is_equal(a, b):
     if a is None or b is None:
-        return False
+        return a is None and b is None
     if type(a) != type(b):
         return False
     if hasattr(a, '__len__'):
