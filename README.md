@@ -3,6 +3,7 @@ A voice navigation system that integrates multiple rounds of dialogue to confirm
 
 Build snowboy
 ---
+https://github.com/pmec-home/snowboy-aarch64
 ```
 mkdir snowboy
 cd snowboy
