@@ -47,7 +47,7 @@ def __update_from():
     dic = copy.deepcopy(return_dict)
     new_values = {}
     for key in __information:
-        if key in dic:
+        if key in dic and "kanban_indoor" != key:
             value = dic[key]
             if not Helper.is_equal(__information[key], value):
                 new_values[key] = value
@@ -165,6 +165,7 @@ def stop_outdoor_destination():
 
 
 def set_indoor_kanbans(kanbans):
+    logger.debug("set_indoor_kanbans: %s", str(kanbans))
     set_information("kanban_indoor", kanbans)
 
 
