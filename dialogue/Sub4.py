@@ -3,6 +3,7 @@ import time
 from dialogue import Speaker, Helper, Information
 
 logger = Helper.get_module_logger(__name__)
+#
 
 
 class Sub4(threading.Thread):
