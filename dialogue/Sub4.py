@@ -53,8 +53,8 @@ class Sub4(threading.Thread):
             msg += str(kanban["distance"]) + "公尺處"
         if kanban["name"] is not None:
             msg += "有一個" + Information.get_indoor_destination_text(kanban["name"]) + "標示"
-        if kanban["sign_direction"] is not None:
-            msg += "指向" + self.gen_direction_text(kanban["sign_direction"]) + "方"
+        if kanban["direction"] is not None:
+            msg += "指向" + self.gen_direction_text(kanban["direction"]) + "方"
         Speaker.play_async(msg)
 
     def update_sim_kanbans(self):
@@ -109,19 +109,19 @@ class Sub4(threading.Thread):
             [
                 {
                     "name": "exit_sign",
-                    "sign_direction": "front_left",
+                    "direction": "front_left",
                     "user_direction": "front",
                     "distance": 5.2
                 },
                 {
                     "name": "wc_sign",
-                    "sign_direction": "right",
+                    "direction": "right",
                     "user_direction": "front",
                     "distance": 3.3
                 },
                 {
                     "name": "platform",
-                    "sign_direction": "right",
+                    "direction": "right",
                     "user_direction": "front",
                     "distance": 0.3
                 }
@@ -129,19 +129,19 @@ class Sub4(threading.Thread):
             [
                 {
                     "name": "wc_sign",
-                    "sign_direction": "right",
+                    "direction": "right",
                     "user_direction": "front",
                     "distance": 2.5
                 },
                 {
                     "name": "dangerous_sign",
-                    "sign_direction": "left",
+                    "direction": "left",
                     "user_direction": "front_right",
                     "distance": 6.1
                 },
                 {
                     "name": "platform",
-                    "sign_direction": "front_right",
+                    "direction": "front_right",
                     "user_direction": "front",
                     "distance": 2.3
                 }
@@ -149,19 +149,19 @@ class Sub4(threading.Thread):
             [
                 {
                     "name": "wc_sign",
-                    "sign_direction": "back_right",
+                    "direction": "back_right",
                     "user_direction": "front_left",
                     "distance": 5.0
                 },
                 {
                     "name": "exit_sign",
-                    "sign_direction": "left",
+                    "direction": "left",
                     "user_direction": "front",
                     "distance": 1.3
                 },
                 {
                     "name": "platform",
-                    "sign_direction": "right",
+                    "direction": "right",
                     "user_direction": "front_left",
                     "distance": 4.1
                 }
@@ -169,19 +169,19 @@ class Sub4(threading.Thread):
             [
                 {
                     "name": "wc_sign",
-                    "sign_direction": "front_left",
+                    "direction": "front_left",
                     "user_direction": "front",
                     "distance": 4.3
                 },
                 {
                     "name": "elev_sign",
-                    "sign_direction": "down",
+                    "direction": "down",
                     "user_direction": "left",
                     "distance": 6.1
                 },
                 {
                     "name": "dangerous_sign",
-                    "sign_direction": "back_right",
+                    "direction": "back_right",
                     "user_direction": "front-left",
                     "distance": 4.2
                 }
@@ -189,19 +189,19 @@ class Sub4(threading.Thread):
             [
                 {
                     "name": "exit_sign",
-                    "sign_direction": "front",
+                    "direction": "front",
                     "user_direction": "front",
                     "distance": 5.6
                 },
                 {
                     "name": "dangerous_sign",
-                    "sign_direction": "back_left",
+                    "direction": "back_left",
                     "user_direction": "front",
                     "distance": 3.7
                 },
                 {
                     "name": "platform",
-                    "sign_direction": "back_right",
+                    "direction": "back_right",
                     "user_direction": "front",
                     "distance": 2.3
                 }
@@ -209,19 +209,19 @@ class Sub4(threading.Thread):
             [
                 {
                     "name": "wc_sign",
-                    "sign_direction": "front",
+                    "direction": "front",
                     "user_direction": "front",
                     "distance": 0.5
                 },
                 {
                     "name": "exit_sign",
-                    "sign_direction": "left",
+                    "direction": "left",
                     "user_direction": "front",
                     "distance": 7.3
                 },
                 {
                     "name": "platform",
-                    "sign_direction": "right",
+                    "direction": "right",
                     "user_direction": "front_left",
                     "distance": 7.8
                 }
