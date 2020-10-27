@@ -3,6 +3,7 @@ A voice navigation system that integrates multiple rounds of dialogue to confirm
 
 Build snowboy
 ---
+```
 mkdir snowboy
 cd snowboy
 wget http://downloads.sourceforge.net/swig/swig-3.0.10.tar.gz &&
@@ -18,3 +19,4 @@ cp -v -R Doc/* /usr/share/doc/swig-3.0.10 &&
 cd ..
 
 git clone https://github.com/Kitt-AI/snowboy && cd snowboy/swig/Python3 && make
+```
