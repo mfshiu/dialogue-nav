@@ -31,6 +31,7 @@ Note 2:
 ```
 [before]
 SNOWBOYDETECTLIBFILE := $(TOPDIR)/lib/ubuntu64/libsnowboy-detect.a
+
 [after]
 SNOWBOYDETECTLIBFILE := $(TOPDIR)/lib/aarch64-ubuntu1604/libsnowboy-detect.a
 ```
