@@ -21,3 +21,12 @@ cd ..
 
 git clone https://github.com/Kitt-AI/snowboy && cd snowboy/swig/Python3 && make
 ```
+Note 1:
+If it occurs python3-config command does not found error, check the python3-config path in user mode (not root), and do make again. Append the path to $PATH.
+ex: export PATH=/home/nvidia/archiconda3/bin:$PATH
+
+Note 2:
+[before]
+SNOWBOYDETECTLIBFILE := $(TOPDIR)/lib/ubuntu64/libsnowboy-detect.a
+[after]
+SNOWBOYDETECTLIBFILE := $(TOPDIR)/lib/aarch64-ubuntu1604/libsnowboy-detect.a
