@@ -10,10 +10,10 @@ def implement_intent(client, query_result):
         client.listen_user()
     else:
         if "室內" == target:
-            Information.set_information("in_outdoor_status", True)
+            Information.set_indoor(True)
             Speaker.play("好的，已經切換到" + target)
         elif "室外" == target:
-            Information.set_information("in_outdoor_status", False)
+            Information.set_indoor(False)
             Speaker.play("好的，已經切換到" + target)
         else:
             Speaker.play("很抱歉，我還不知道怎麼切換到" + target)

@@ -40,7 +40,7 @@ class DialogueClient:
             Information.set_outdoor_destination(next_dest.coordinate)
         else:
             Speaker.play("您已經在室內")
-            Information.set_information("in_outdoor_status", True)
+            Information.set_indoor(True)
             self.standby(True)
 
     def __arrived_indoor(self, key, value):
@@ -76,7 +76,7 @@ class DialogueClient:
         self._user_listener.terminate()
         self.is_terminated = True
 
-    def start(self, return_dict):
+    def start(self):
         Speaker.play_async("HI，我叫小美，你好。")
 
         self._user_listener = UserListener.UserListener(args=(self.user_words,))
@@ -87,7 +87,7 @@ class DialogueClient:
 
         Information.subscribe('sub1_arrived', self.__arrived_outdoor, True)
         Information.subscribe('sub4_arrived', self.__arrived_indoor, True)
-        Information.start(return_dict)
+        Information.start()
 
         self.is_terminated = False
         # Speaker.play_async("歡迎使用視障者的智慧伙伴，我叫小美，請呼叫我的名字，我可以帶你去想去的地方。")

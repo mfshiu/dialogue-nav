@@ -38,7 +38,7 @@ class Sub4(threading.Thread):
         return directions[direction]
 
     def get_kanban(self, kanban_name):
-        viewed_kanbans = Information.get_information('kanban_indoor')
+        viewed_kanbans = Information.get_indoor_kanbans()
         if viewed_kanbans is None:
             return None
         for kanban in viewed_kanbans:

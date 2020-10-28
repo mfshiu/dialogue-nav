@@ -3,16 +3,17 @@ import time
 import dialogue.Helper as Helper
 from threading import Timer
 import copy
+from sub1_api import Sub1_api
 
 from dialogue.Helper import get_module_logger
 logger = get_module_logger(__name__)
 
-global return_dict
-return_dict = None
+# global return_dict
+# return_dict = None
 __information = dict()
-__changed = dict()
 __callbacks = dict()
 __running = False
+__sub1 = None
 logger.debug("__init__")
 
 
@@ -30,53 +31,24 @@ def __run():
     __running = True
     Timer(3, __log_timer).start()
     while __running:
-        __update_from()
-        __update_to()
+        __do_subscribe()
         time.sleep(1)
 
     logger.info("terminated")
 
 
-def __update_from():
-    callbacks = []
-    global return_dict
-    if return_dict is None:
-        return
-
-    # Store changed values to new_values
-    dic = copy.deepcopy(return_dict)
-    new_values = {}
-    for key in __information:
-        if key in dic and "kanban_indoor" != key:
-            value = dic[key]
-            if not Helper.is_equal(__information[key], value):
-                new_values[key] = value
-
-    # Append callback and update information
-    for key in new_values:
-        value = new_values[key]
-        if key in __callbacks:
+def __check_callback(key, value):
+    if key in __callbacks and key in __information:
+        if not Helper.is_equal(__information[key], value):
             cb = __callbacks[key]
-            if 'any' == cb[1] or Helper.is_equal(value, cb[1]):
-                callbacks.append((cb[0], key, value))
-        logger.debug("Information is changed. Key: %s, %s -> %s"
-                     % (key, str(__information[key]), str(value)))
-        __information[key] = value
-
-    # Raise callback
-    for c in callbacks:
-        c[0](c[1], c[2])
+            callback = cb[0]
+            target_value = cb[1]
+            if 'any' == target_value or Helper.is_equal(value, target_value):
+                callback(key, value)
 
 
-def __update_to():
-    global return_dict
-    for key in __changed:
-        try:
-            return_dict[key] = __changed[key]
-        except:
-            logger.error("Update return_dict error, key: %s, new value: %s",
-                         key, str(__changed[key]))
-    __changed.clear()
+def __do_subscribe():
+    __check_callback("sub1_arrived", __sub1.is_arrived())
 
 
 def get_indoor_destination():
@@ -84,13 +56,18 @@ def get_indoor_destination():
 
 
 def get_location():
+    loc = None
+    loc_data = __sub1.get_location()
+    if loc_data is not None:
+        loc = loc_data[0]
+    return loc
     # return 25.0230239, 121.2210628
-    result = None
-    if "location" in __information:
-        loc = __information["location"]
-        if not loc is None:
-            result = __information["location"][0]
-    return result
+    # result = None
+    # if "location" in __information:
+    #     loc = __information["location"]
+    #     if not loc is None:
+    #         result = __information["location"][0]
+    # return result
 
 
 def get_outdoor_destination():
@@ -107,8 +84,16 @@ def get_information(name):
         logger.error("get_information error. name: %s", name)
 
 
+def is_awakable():
+    return __sub1.is_awakable()
+
+
 def is_indoor():
-    return get_information("in_outdoor_status")
+    return __sub1.is_indoor()
+
+
+def is_user_speaking():
+    return get_information("user_speaking")
 
 
 def get_indoor_destination_text(name):
@@ -151,8 +136,15 @@ def stop_indoor_destination():
 
 
 def set_outdoor_destination(coordinate, dest_type):
-    set_information('sub1_destination', (coordinate[0], coordinate[1], dest_type))
-    set_information('sub1_arrived', False)
+    dest = (coordinate[0], coordinate[1], dest_type)
+    set_information('sub1_destination', dest)
+    __sub1.set_destination(dest)
+    # set_information('sub1_arrived', False)
+
+
+def set_sub1(sub1):
+    global __sub1
+    __sub1 = sub1
 
 
 def set_user_speaking(is_speaking):
@@ -164,32 +156,29 @@ def stop_outdoor_destination():
     set_information('sub1_arrived', True)
 
 
+def set_indoor(indoor):
+    __sub1.set_indoor(indoor)
+
+
+def get_indoor_kanbans():
+    return get_information("kanban_indoor")
+
+
 def set_indoor_kanbans(kanbans):
     logger.debug("set_indoor_kanbans: %s", str(kanbans))
     set_information("kanban_indoor", kanbans)
 
 
 def set_information(name, value):
-    try:
-        __information[name] = value
-        __changed[name] = value
-    except:
-        logger.error("set_information error. name: %s, value: %s", name, str(value))
+    __information[name] = value
+    __check_callback(name, value)
 
 
-def start(source_return_dict):
-    global return_dict
-    return_dict = source_return_dict
-
-    set_information('awakable', True)
-    set_information('in_outdoor_status', True)
-    set_information('kanban_indoor', None)
-    set_information('location', None)
-    set_information('sub1_arrived', True)
-    set_information('sub1_destination', None)
-    set_information('sub4_arrived', True)
-    set_information('sub4_destination', None)
-    set_information('user_speaking', False)
+def start():
+    # Initialize data
+    __information['sub4_arrived'] = True
+    __information['sub4_destination'] = None
+    __information['user_speaking'] = False
 
     t = threading.Thread(target=__run)
     t.start()
