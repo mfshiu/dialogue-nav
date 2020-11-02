@@ -52,10 +52,10 @@ def __do_subscribe():
     old_value = __information["sub1_destination"] is None
     new_value = __sub1.is_arrived()
     __check_callback("sub1_arrived", old_value, new_value)
-    if not Helper.is_equal(old_value, new_value):
-        if new_value:
-            set_information("sub1_destination", None)
-        # __information["sub1_arrived"] = new_value
+    # if not Helper.is_equal(old_value, new_value):
+    #     if new_value:
+    #         set_information("sub1_destination", None)
+    #         __information["sub1_arrived"] = new_value
 
 
 def get_indoor_destination():
