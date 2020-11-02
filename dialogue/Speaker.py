@@ -1,7 +1,6 @@
 from datetime import datetime
 from playsound import playsound
 import os
-import threading
 from dialogue import Information
 from google.cloud import texttospeech
 from dialogue.Helper import get_module_logger

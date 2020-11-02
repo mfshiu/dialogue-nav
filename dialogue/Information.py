@@ -48,11 +48,14 @@ def __check_callback(key, old_value, new_value):
 
 
 def __do_subscribe():
-    old_value = __information["sub1_arrived"]
+    # old_value = __information["sub1_arrived"]
+    old_value = __information["sub1_destination"] is None
     new_value = __sub1.is_arrived()
     __check_callback("sub1_arrived", old_value, new_value)
     if not Helper.is_equal(old_value, new_value):
-        __information["sub1_arrived"] = new_value
+        if new_value:
+            set_information("sub1_destination", None)
+        # __information["sub1_arrived"] = new_value
 
 
 def get_indoor_destination():
@@ -140,11 +143,14 @@ def stop_indoor_destination():
 
 
 def set_outdoor_destination(coordinate, dest_type):
-    dest = (coordinate[0], coordinate[1], dest_type)
-    set_information('sub1_arrived', False)
-    set_information('sub1_destination', dest)
-    __sub1.set_destination(dest)
-    # set_information('sub1_arrived', False)
+    if coordinate is None:
+        set_information('sub1_destination', None)
+    else:
+        dest = (coordinate[0], coordinate[1], dest_type)
+        # set_information('sub1_arrived', False)
+        set_information('sub1_destination', dest)
+        __sub1.set_destination(dest)
+        # set_information('sub1_arrived', False)
 
 
 def set_sub1(sub1):
@@ -158,7 +164,7 @@ def set_user_speaking(is_speaking):
 
 def stop_outdoor_destination():
     set_information('sub1_destination', None)
-    set_information('sub1_arrived', True)
+    # set_information('sub1_arrived', True)
 
 
 def set_indoor(indoor):
@@ -184,7 +190,7 @@ def set_information(name, value):
 
 def start():
     # Initialize data
-    __information['sub1_arrived'] = True
+    # __information['sub1_arrived'] = True
     __information['sub1_destination'] = None
     __information['sub4_arrived'] = True
     __information['sub4_destination'] = None

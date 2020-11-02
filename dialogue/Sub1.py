@@ -17,10 +17,11 @@ class Sub1(threading.Thread):
         return
 
     def __walk_timer(self):
-        arrived = Information.get_information('sub1_arrived')
+        # arrived = Information.get_information('sub1_arrived')
+        dest = Information.get_information('sub1_destination')
         # 如果還沒到且目的地不同，就會前進
-        if not arrived:
-            dest = Information.get_information('sub1_destination')
+        if dest is not None:
+            # dest = Information.get_information('sub1_destination')
             if not Helper.is_arrived(self.current_location, dest):
                 if len(self.locations) > 0:
                     self.current_location = self.locations.pop(0)
@@ -28,7 +29,8 @@ class Sub1(threading.Thread):
                     logger.debug("walk to: %s", str(self.current_location))
             if Helper.is_arrived(self.current_location, dest):
                 logger.warn("Arrived.")
-                Information.set_information("sub1_arrived", True)
+                Information.set_information('sub1_destination', None)
+                # Information.set_information("sub1_arrived", True)
 
         if self.running:
             Timer(5, self.__walk_timer).start()
