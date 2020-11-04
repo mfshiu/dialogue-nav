@@ -198,7 +198,7 @@ def start():
     __information['sub4_arrived'] = True
     __information['sub4_destination'] = None
     __information['user_speaking'] = False
-    __sub1.set_indoor(True) #
+    __sub1.set_indoor(True)
 
     t = threading.Thread(target=__run)
     t.start()
