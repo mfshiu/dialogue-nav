@@ -204,8 +204,9 @@ def start():
 
 
 def subscribe(name, callback, value="any"):
+    logger.debug("Subscribe %s to callback: %s", name, str(callback))
     __callbacks[name] = (callback, value)
-    logger.debug("subscribe(name=%s, callback", name)
+    # logger.debug("subscribe(name=%s, callback", name)
 
 
 def terminate():
