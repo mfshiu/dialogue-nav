@@ -40,11 +40,14 @@ def __run():
 def __check_callback(key, old_value, new_value):
     if key in __callbacks:
         if not Helper.is_equal(old_value, new_value):
-            cb = __callbacks[key]
-            callback = cb[0]
-            target_value = cb[1]
-            if 'any' == target_value or Helper.is_equal(new_value, target_value):
-                callback(key, new_value)
+            if key in __callbacks:
+                cb = __callbacks[key]
+                callback = cb[0]
+                target_value = cb[1]
+                if 'any' == target_value or Helper.is_equal(new_value, target_value):
+                    callback(key, new_value)
+            else:
+                logger.error("No %s callback to run.", key)
 
 
 def __do_subscribe():
