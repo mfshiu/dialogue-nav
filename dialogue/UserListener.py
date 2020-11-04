@@ -129,10 +129,10 @@ class UserListener(threading.Thread):
             if self.job_count > 0:
                 Speaker.mute()
                 Information.set_user_speaking(True)
-                try:
-                    self.__record(self.limit_seconds)
-                except:
-                    logger.error("Do record error!")
+                # try:
+                self.__record(self.limit_seconds)
+                # except Exception as ex:
+                #     logger.error("Do record error!\n%s", str(ex))
                 Information.set_user_speaking(False)
                 Speaker.unmute()
                 self.job_count = 0
