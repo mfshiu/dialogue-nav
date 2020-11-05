@@ -1,5 +1,6 @@
 import threading
 import time
+import json
 import dialogue.Helper as Helper
 from threading import Timer
 import copy
@@ -180,7 +181,7 @@ def get_indoor_kanbans():
 
 def set_indoor_kanbans(kanbans):
     logger.debug("set_indoor_kanbans: %s", str(kanbans))
-    set_information("kanban_indoor", kanbans)
+    set_information("kanban_indoor", json.load(kanbans))
 
 
 def set_information(name, value):

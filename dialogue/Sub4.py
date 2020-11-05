@@ -1,5 +1,6 @@
 import threading
 import time
+import json
 from dialogue import Speaker, Helper, Information
 
 logger = Helper.get_module_logger(__name__)
@@ -42,7 +43,8 @@ class Sub4(threading.Thread):
         if viewed_kanbans is None:
             return None
         for kanban in viewed_kanbans:
-            if kanban_name == kanban["name"]:
+            logger.debug("Kanban: %s", str(kanban))
+            if kanban_name == k["name"]:
                 return kanban
         return None
 
