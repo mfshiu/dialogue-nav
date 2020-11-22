@@ -21,7 +21,7 @@ class Sub4(threading.Thread):
     def cancel_destination(self):
         dest = Information.get_information('sub4_destination')
         if dest is not None:
-            play_sound("己停止前往" + dest)
+            self.play_sound("己停止前往" + dest)
         Information.set_information("sub4_arrived", True)
 
     def gen_direction_text(self, direction):
@@ -37,7 +37,7 @@ class Sub4(threading.Thread):
         }
         return directions[direction]
 
-    def play_sound(self, msg, play_async):
+    def play_sound(self, msg, play_async=False):
         if not Speaker.is_playing():
             if play_async:
                 Speaker.play_async(msg)
@@ -89,14 +89,14 @@ class Sub4(threading.Thread):
                 if distance is not None:
                     if float(distance) < 1.5:
                         logger.warn("Arrived.")
-                        play_sound("您已經抵達" + kanban_name)
+                        self.play_sound("您已經抵達" + kanban_name)
                         Information.set_information("sub4_arrived", True)
                     else:
                         self.speak_kanban(kanban)
                 else:
                     self.speak_kanban(kanban)
             else:
-                play_sound("我看不見有關" + kanban_name + "的標示", True)
+                self.play_sound("我看不見有關" + kanban_name + "的標示", True)
 
         # if self.running:
         #     Timer(10, self.walk_timer).start()

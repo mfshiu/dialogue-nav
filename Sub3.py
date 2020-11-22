@@ -9,7 +9,7 @@ from dialogue.DialogueClient import DialogueClient
 from dialogue.Sub4 import Sub4
 from dialogue import Information
 from sub1_api import Sub1_api
-
+from dialogue import Speaker
 
 logger = Helper.get_module_logger(__name__)
 
@@ -27,6 +27,13 @@ class Sub3(threading.Thread):
 
     def is_speaking(self):
         return Information.is_user_speaking()
+
+    def play_sound(self, msg, play_async=False):
+        if not Speaker.is_playing():
+            if play_async:
+                Speaker.play_async(msg)
+            else:
+                Speaker.play(msg)
 
     def run(self):
         self.dialogue_client.start()
@@ -67,6 +74,7 @@ if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
 
     sub3.start()
+    # sub3.play_sound("子三放音測試")
 
     def shutdown():
         sub3.terminate()
