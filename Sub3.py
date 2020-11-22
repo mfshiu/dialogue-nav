@@ -2,6 +2,7 @@ import threading
 from dialogue import Helper
 import signal
 import time
+import json
 from dialogue.DialogueClient import DialogueClient
 # from multiprocessing import Manager
 # from dialogue.Sub1 import Sub1
@@ -46,7 +47,7 @@ class Sub3(threading.Thread):
         return
 
     def update_kanbans(self, kanbans):
-        Information.set_indoor_kanbans(kanbans)
+        Information.set_indoor_kanbans(json.loads(kanbans))
 
     def terminate(self):
         self.running = False

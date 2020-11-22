@@ -1,6 +1,5 @@
 import threading
 import time
-import json
 from dialogue import Speaker, Helper, Information
 
 logger = Helper.get_module_logger(__name__)
@@ -22,7 +21,7 @@ class Sub4(threading.Thread):
     def cancel_destination(self):
         dest = Information.get_information('sub4_destination')
         if dest is not None:
-            Speaker.play("己停止前往" + dest)
+            play_sound("己停止前往" + dest)
         Information.set_information("sub4_arrived", True)
 
     def gen_direction_text(self, direction):
@@ -37,6 +36,13 @@ class Sub4(threading.Thread):
             "front_left": "左前",
         }
         return directions[direction]
+
+    def play_sound(self, msg, play_async):
+        if not Speaker.is_playing():
+            if play_async:
+                Speaker.play_async(msg)
+            else:
+                Speaker.play(msg)
 
     def get_kanban(self, kanban_name):
         viewed_kanbans = Information.get_indoor_kanbans()
@@ -58,7 +64,8 @@ class Sub4(threading.Thread):
             msg += "有一個" + Information.get_indoor_destination_text(kanban["name"]) + "標示"
         if kanban["direction"] is not None:
             msg += "指向" + self.gen_direction_text(kanban["direction"]) + "方"
-        Speaker.play_async(msg)
+        logger.info(msg)
+        # Speaker.play_async(msg)
 
     def update_sim_kanbans(self):
         if not Information.is_indoor():
@@ -82,14 +89,14 @@ class Sub4(threading.Thread):
                 if distance is not None:
                     if float(distance) < 1.5:
                         logger.warn("Arrived.")
-                        Speaker.play("您已經抵達" + kanban_name)
+                        play_sound("您已經抵達" + kanban_name)
                         Information.set_information("sub4_arrived", True)
                     else:
                         self.speak_kanban(kanban)
                 else:
                     self.speak_kanban(kanban)
             else:
-                Speaker.play_async("我看不見有關" + kanban_name + "的標示")
+                play_sound("我看不見有關" + kanban_name + "的標示", True)
 
         # if self.running:
         #     Timer(10, self.walk_timer).start()
