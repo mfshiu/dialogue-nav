@@ -74,7 +74,7 @@ if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal_handler)
 
     sub3.start()
-    # sub3.play_sound("子三放音測試")
+    sub3.play_sound("子三放音測試")
 
     def shutdown():
         sub3.terminate()
