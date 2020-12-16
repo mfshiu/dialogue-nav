@@ -88,7 +88,7 @@ class DialogueClient:
         Information.subscribe('sub1_arrived', self.__arrived_outdoor, True)
         Information.subscribe('sub4_arrived', self.__arrived_indoor, True)
         Information.start()
-        Information.set_indoor(True)
+        Information.set_indoor(True) #
 
         self.is_terminated = False
         # Speaker.play_async("歡迎使用視障者的智慧伙伴，我叫小美，請呼叫我的名字，我可以帶你去想去的地方。")
