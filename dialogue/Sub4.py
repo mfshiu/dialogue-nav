@@ -65,7 +65,7 @@ class Sub4(threading.Thread):
         if kanban["direction"] is not None:
             msg += "指向" + self.gen_direction_text(kanban["direction"]) + "方"
         logger.info(msg)
-        # Speaker.play_async(msg)
+        Speaker.play_async(msg)
 
     def update_sim_kanbans(self):
         if not Information.is_indoor():
