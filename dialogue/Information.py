@@ -163,6 +163,7 @@ def set_sub1(sub1):
 
 def set_user_speaking(is_speaking):
     set_information('user_speaking', is_speaking)
+    __sub1.set_user_speaking(is_speaking)
 
 
 def stop_outdoor_destination():
