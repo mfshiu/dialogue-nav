@@ -1,0 +1,103 @@
+from threading import Timer
+import paho.mqtt.client as mqtt
+import config
+import json
+from datetime import datetime
+
+
+def write_log(msg, ex=None):
+    print("[%s] %s" % (str(datetime.now())[5:-3], msg))
+    if ex:
+        print(ex)
+
+
+class Sub1_api:
+
+    def __init__(self):
+        self.location = ([25.0070536, 121.4708157], [True])
+        self.destination = None
+        self.indoor = False
+        self.arrived = True
+        self.awakable = False
+
+        print("Connecting to %s, port: %d, user: %s" % (config.mqtt_address, config.mqtt_port, config.mqtt_username))
+        self.client = mqtt.Client()
+        self.client.on_connect = self.on_connect
+        self.client.on_message = self.on_message
+        if config.mqtt_username:
+            self.client.username_pw_set(config.mqtt_username, config.mqtt_password)
+        self.client.connect(config.mqtt_address, config.mqtt_port, config.mqtt_keepalive)
+        self.client.loop_start()
+
+    def __on_connect(self, client, userdata, flags, rc):
+        write_log("Connected with result code " + str(rc))
+        client.subscribe("echo")
+        client.subscribe("location")
+        client.subscribe("awakable")
+        client.subscribe("indoor")
+
+    def __on_message(self, client, db, msg):
+        data = msg.payload.decode('utf-8', 'ignore')
+        write_log("topic: %s, data: %s" % (msg.topic, data))
+        data = json.loads(data)
+
+        if "location" == msg.topic:
+            self.location = ([data["lat"], data["lng"]], [True])
+        elif "awakable" == msg.topic:
+            self.awakable = "on" == data["status"]
+        elif "indoor" == msg.topic:
+            self.indoor = "on" == data["status"]
+        elif "echo" == msg.topic:
+            write_log("An echo got.")
+
+    def __set_arrived(self):
+        self.arrived = True
+        if self.arrived:
+            payload = {"status": "on"}
+        else:
+            payload = {"status": "off"}
+        self.client.publish("arrived", payload)
+        print("Sub1 arrived.")
+    
+    def get_location(self):
+        return self.location
+
+    def is_awakable(self):
+        return self.awakable
+
+    def set_user_speaking(self, is_speaking):
+        if is_speaking:
+            payload = {"status": "on"}
+        else:
+            payload = {"status": "off"}
+        self.client.publish("user_speaking", payload)
+
+    def set_destination(self, dest):
+        self.destination = dest
+        self.arrived = False
+
+        payload = {
+            "lat": dest[0],
+            "lng": dest[1],
+            "type": dest[2],
+        }
+        self.client.publish("destination", payload)
+        self.client.publish("arrived", "off")
+
+    def is_indoor(self):
+        return self.indoor
+
+    def set_indoor(self, indoor):
+        self.indoor = indoor
+        if self.indoor:
+            payload = {"status": "on"}
+        else:
+            payload = {"status": "off"}
+        self.client.publish("indoor", payload)
+
+    def is_arrived(self):
+        return self.arrived
+
+    
+if __name__=='__main__':
+    sub1_api = Sub1_api()
