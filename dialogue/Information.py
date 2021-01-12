@@ -2,9 +2,6 @@ import threading
 import time
 import dialogue.Helper as Helper
 from threading import Timer
-import copy
-from sub1_api import Sub1_api
-
 from dialogue.Helper import get_module_logger
 logger = get_module_logger(__name__)
 

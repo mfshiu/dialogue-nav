@@ -56,7 +56,7 @@ class Sub1_api:
             payload = {"status": "on"}
         else:
             payload = {"status": "off"}
-        self.client.publish("arrived", payload)
+        self.client.publish("arrived", json.dumps(payload))
         print("Sub1 arrived.")
     
     def get_location(self):
@@ -70,7 +70,7 @@ class Sub1_api:
             payload = {"status": "on"}
         else:
             payload = {"status": "off"}
-        self.client.publish("user_speaking", payload)
+        self.client.publish("user_speaking", json.dumps(payload))
 
     def set_destination(self, dest):
         self.destination = dest
@@ -81,8 +81,8 @@ class Sub1_api:
             "lng": dest[1],
             "type": dest[2],
         }
-        self.client.publish("destination", payload)
-        self.client.publish("arrived", "off")
+        self.client.publish("destination", json.dumps(payload))
+        self.client.publish("arrived", json.dumps({"status": "off"}))
 
     def is_indoor(self):
         return self.indoor
@@ -93,7 +93,7 @@ class Sub1_api:
             payload = {"status": "on"}
         else:
             payload = {"status": "off"}
-        self.client.publish("indoor", payload)
+        self.client.publish("indoor", json.dumps(payload))
 
     def is_arrived(self):
         return self.arrived
