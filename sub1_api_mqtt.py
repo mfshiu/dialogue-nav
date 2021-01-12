@@ -57,7 +57,7 @@ class Sub1_api:
         else:
             payload = {"status": "off"}
         self.client.publish("arrived", json.dumps(payload))
-        print("Sub1 arrived.")
+        print("Sub1 arrived..")
     
     def get_location(self):
         return self.location
