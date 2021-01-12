@@ -22,8 +22,8 @@ class Sub1_api:
 
         print("Connecting to %s, port: %d, user: %s" % (config.mqtt_address, config.mqtt_port, config.mqtt_username))
         self.client = mqtt.Client()
-        self.client.on_connect = self.on_connect
-        self.client.on_message = self.on_message
+        self.client.on_connect = self.__on_connect
+        self.client.on_message = self.__on_message
         if config.mqtt_username:
             self.client.username_pw_set(config.mqtt_username, config.mqtt_password)
         self.client.connect(config.mqtt_address, config.mqtt_port, config.mqtt_keepalive)
