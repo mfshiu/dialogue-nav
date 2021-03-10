@@ -18,10 +18,8 @@ class UserProcessor(threading.Thread):
         return
 
     def __start_dialogue(self, flac_file):
-        # time.sleep(1)
-        # self.dialogue_client.listen_user()
         resp = Dialogflow.send_voice(flac_file)
-        # query_result = Dialogflow.__detect_intent_stream("vin-gmsx", "session1", flac_file, "zh-TW")
+        threading.Thread(target=lambda: os.remove(flac_file)).start()
         logger.debug('Query text: {}'.format(resp.query_text))
         logger.debug('Detected intent: {} (confidence: {})'.format(
             resp.intent.action,
@@ -29,14 +27,11 @@ class UserProcessor(threading.Thread):
         logger.debug('Fulfillment text: {}'.format(resp.fulfillment_text))
 
         action_module = Helper.get_module(intents.__name__, resp.action)
-        # action_module = Helper.get_module("intents", resp.action)
         if action_module is not None:
             logger.debug('Found module: {}'.format(str(action_module)))
             action_module.implement_intent(self.dialogue_client, resp)
         else:
             logger.error('Cannot find module: {}'.format(resp.action))
-
-        os.remove(flac_file)
 
     def run(self):
         while self.running:

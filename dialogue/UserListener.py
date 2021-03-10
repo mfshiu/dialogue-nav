@@ -41,7 +41,7 @@ class UserListener(threading.Thread):
         logger.info("Stop listen hot word")
         HotWord.stop_listen()
 
-    def __record(self, limit_seconds):
+    def x__record(self, limit_seconds):
         self.speaking = True
         logger.info("---recording---")
 
@@ -56,36 +56,13 @@ class UserListener(threading.Thread):
 
         d = []
         # print((RATE / chunk) * RECORD_SECONDS)
-        head_voice_count = 0
-        rear_zero_count = 0
-        is_start_speaking = False
+        limit_seconds = 2
         total = RATE // chunk * limit_seconds
-        silence_count = RATE // chunk * 0.25
-        logger.debug("Total chunk: " + str(total) + ", Silence chunk: " + str(silence_count))
+        logger.debug("Total chunk: " + str(total))
         for i in range(0, total):
             time.sleep(0.03)
             data = audio_stream.read(chunk)
-
-            # Check silence
-            cnt = data.count(0)
-            if is_start_speaking:
-                if cnt < VOICE_THRESHOLD:
-                    rear_zero_count = 0
-                else:
-                    rear_zero_count += 1
-                if rear_zero_count > silence_count:
-                    logger.debug("Stop voice, i = " + str(i))
-                    break
-            else:
-                if cnt < VOICE_THRESHOLD:
-                    head_voice_count += 1
-                else:
-                    head_voice_count = 0
-                if head_voice_count > 2:
-                    is_start_speaking = True
-                    logger.debug("Start voice, i = " + str(i))
-            if cnt < VOICE_THRESHOLD:
-                d.append(data)
+            d.append(data)
 
         logger.debug("Done recording, chunk size: " + str(len(d)))
         audio_stream.stop_stream()
@@ -107,7 +84,86 @@ class UserListener(threading.Thread):
         from pydub import AudioSegment
         song = AudioSegment.from_wav(output_filename_wave)
         song.export(output_filename_flac, format="flac")
-        os.remove(output_filename_wave)
+        threading.Thread(target=lambda: os.remove(output_filename_wave)).start()
+        self.user_words.put(output_filename_flac)
+        logger.debug("Done flac writing: " + output_filename_wave)
+
+        self.speaking = False
+
+    def __record(self, limit_seconds):
+        self.speaking = True
+        logger.info("---recording---")
+
+        while HotWord.is_listening():
+            self.__stop_listen_hotword()
+            logger.warn("Waiting hot word stop.")
+            time.sleep(1)
+
+        audio = pyaudio.PyAudio()
+        audio_stream = audio.open(format=FORMAT, channels=CHANNELS, rate=RATE,
+                                  input=True, frames_per_buffer=chunk)
+
+        voice_data = []
+        # print((RATE / chunk) * RECORD_SECONDS)
+        head_voice_count = 0
+        rear_silence_count = 0
+        is_start_speaking = False
+        chunk_count_per_second = RATE // chunk
+        total_chunks = chunk_count_per_second * limit_seconds
+        silence_count_threshold = chunk_count_per_second * 0.25
+        wait_seconds = chunk / RATE * 0.95
+        logger.debug("Total chunk: %d, Silence chunk: %f, Wait seconds: %f" % (total_chunks, silence_count_threshold, wait_seconds))
+        for i in range(0, total_chunks):
+            time.sleep(wait_seconds)
+            try:
+                buffer = audio_stream.read(chunk)
+            except Exception as ex:
+                logger.error("Read audio stream error!\n%s", str(ex))
+                break
+
+            # Check silence
+            zero_count = buffer.count(0)  # Get zero count in buffer
+            if is_start_speaking:
+                if zero_count < VOICE_THRESHOLD:
+                    rear_silence_count = 0
+                else:
+                    rear_silence_count += 1
+                if rear_silence_count > silence_count_threshold:
+                    logger.debug("Stop voice, chunk_number = %d" % (i,))
+                    break
+            else:
+                if zero_count < VOICE_THRESHOLD:
+                    head_voice_count += 1
+                else:
+                    head_voice_count = 0
+                if head_voice_count > 2:
+                    is_start_speaking = True
+                    logger.debug("Start voice, chunk_number = %d" % (i,))
+            if zero_count < VOICE_THRESHOLD:
+                voice_data.append(buffer)
+
+        logger.debug("Done recording, chunk size: " + str(len(voice_data)))
+        audio_stream.stop_stream()
+        audio_stream.close()
+        audio.terminate()
+
+        # Write to file
+        tag = datetime.now().strftime("%Y%m%d%H%M%S")
+        output_filename_wave = "./dialogue/user/msg-" + tag + ".wav"
+        output_filename_flac = "./dialogue/user/msg-" + tag + ".flac"
+        wf = wave.open(output_filename_wave, 'wb')
+        wf.setnchannels(CHANNELS)
+        wf.setsampwidth(audio.get_sample_size(FORMAT))
+        wf.setframerate(RATE)
+        wf.writeframes(b''.join(voice_data))
+        wf.close()
+        logger.debug("Done wav writing: " + output_filename_wave)
+
+        from pydub import AudioSegment
+        song = AudioSegment.from_wav(output_filename_wave)
+        song.export(output_filename_flac, format="flac")
+        # os.remove(output_filename_wave)
+        threading.Thread(target=lambda: os.remove(output_filename_wave)).start()
         self.user_words.put(output_filename_flac)
         logger.debug("Done flac writing: " + output_filename_wave)
 

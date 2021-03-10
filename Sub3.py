@@ -8,8 +8,8 @@ from dialogue.DialogueClient import DialogueClient
 # from dialogue.Sub1 import Sub1
 from dialogue.Sub4 import Sub4
 from dialogue import Information
-# from sub1_api import Sub1_api
-from sub1_api_mqtt import Sub1_api
+from sub1_api import Sub1_api
+# from sub1_api_mqtt import Sub1_api
 from dialogue import Speaker
 
 logger = Helper.get_module_logger(__name__)
@@ -44,6 +44,8 @@ class Sub3(threading.Thread):
         #     self.sub1.start()
         self.sub4 = Sub4(self.is_simulation)
         self.sub4.start()
+
+        Information.set_indoor(False)
 
         while self.running:
             if self.dialogue_client.is_terminated:

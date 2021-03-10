@@ -111,6 +111,7 @@ def get_indoor_destination_text(name):
         "elev_sign": "電梯",
         "sign": "",
         "platform": "月台",
+        "gate": "匣門",
     }
     if name in names:
         return names[name]
@@ -125,6 +126,7 @@ def parse_indoor_destination(destination_name):
         "危險": "dangerous_sign",
         "電梯": "elev_sign",
         "月台": "platform",
+        "匣門": "gate",
     }
     if destination_name in names:
         return names[destination_name]
@@ -196,7 +198,7 @@ def start():
     __information['sub4_arrived'] = True
     __information['sub4_destination'] = None
     __information['user_speaking'] = False
-    set_indoor(True)
+    # set_indoor(True)
 
     t = threading.Thread(target=__run)
     t.start()

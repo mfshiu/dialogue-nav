@@ -26,14 +26,26 @@ class Sub4(threading.Thread):
 
     def gen_direction_text(self, direction):
         directions = {
-            "front": "前",
-            "front_right": "右前",
-            "right": "右",
-            "back_right": "右後",
-            "back": "後",
-            "back_left": "左後",
-            "left": "左",
-            "front_left": "左前",
+            "front": "前方",
+            "front_right": "右前方",
+            "right": "右方",
+            "back_right": "右後方",
+            "back": "後方",
+            "back_left": "左後方",
+            "left": "左方",
+            "front_left": "左前方",
+            "1": "一點鐘方向",
+            "2": "兩點鐘方向",
+            "3": "三點鐘方向",
+            "4": "四點鐘方向",
+            "5": "五點鐘方向",
+            "6": "六點鐘方向",
+            "7": "七點鐘方向",
+            "8": "八點鐘方向",
+            "9": "九點鐘方向",
+            "10": "十點鐘方向",
+            "11": "十一點鐘方向",
+            "12": "十二點鐘方向",
         }
         return directions[direction]
 
@@ -57,13 +69,13 @@ class Sub4(threading.Thread):
     def speak_kanban(self, kanban):
         msg = ""    # msg = format("%s方%s公尺處，有一個%s標示指向%s方")
         if kanban["user_direction"] is not None:
-            msg += self.gen_direction_text(kanban["user_direction"]) + "方"
+            msg += self.gen_direction_text(kanban["user_direction"])
         if kanban["distance"] is not None:
             msg += str(kanban["distance"]) + "公尺處"
         if kanban["name"] is not None:
             msg += "有一個" + Information.get_indoor_destination_text(kanban["name"]) + "標示"
         if kanban["direction"] is not None:
-            msg += "指向" + self.gen_direction_text(kanban["direction"]) + "方"
+            msg += "指向" + self.gen_direction_text(kanban["direction"])
         logger.info(msg)
         Speaker.play_async(msg)
 

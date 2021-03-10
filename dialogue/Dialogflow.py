@@ -90,8 +90,6 @@ def __detect_intent_stream(project_id, session_id, audio_file_path,
     for response in responses:
         logger.debug('Intermediate transcript: "{}".'.format(
                 response.recognition_result.transcript))
-    # Note: The result from the last response is the final transcript along
-    # with the detected content.
     query_result = response.query_result
     logger.debug('=' * 20)
     logger.debug('Query text: {}'.format(query_result.query_text))
