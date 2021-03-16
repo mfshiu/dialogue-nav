@@ -9,8 +9,10 @@ logger = get_module_logger(__name__)
 # return_dict = None
 __information = dict()
 __callbacks = dict()
+__locations = dict()
 __running = False
 __sub1 = None
+
 logger.debug("__init__")
 
 
@@ -23,10 +25,21 @@ def __log_timer():
         Timer(5, __log_timer).start()
 
 
+def __user_not_speaking_count_timer():
+    if __information['user_not_speaking_countdown'] > 0:
+        __information['user_not_speaking_countdown'] -= 1
+        if __information['user_not_speaking_countdown'] == 0:
+            __set_user_speaking(False)
+
+    if __running:
+        Timer(1, __user_not_speaking_count_timer).start()
+
+
 def __run():
     global __running
     __running = True
     Timer(3, __log_timer).start()
+    Timer(1, __user_not_speaking_count_timer).start()
     while __running:
         __do_subscribe()
         time.sleep(1)
@@ -119,6 +132,46 @@ def get_indoor_destination_text(name):
         return "不明"
 
 
+def find_similar_location(name):
+    threshold = 0.8
+    s = 0
+    name2, loc2 = None, None
+    for k in __locations:
+        s1 = Helper.similarity(name, k)
+        if s1 >= threshold and s1 > s:
+            s = s1
+            loc2 = __locations[k]
+            name2 = k
+
+    return name2, loc2
+
+
+# def find_similar_location(name, loc):
+#     threshold = 0.8
+#     loc0 = loc
+#     s = 0
+#     for k in __locations:
+#         s1 = Helper.similarity(name, k)
+#         if s1 >= threshold and s1 > s:
+#             d = Helper.distance(loc0, __locations[k])
+#             if d < 3000:
+#                 s = s1
+#                 loc = __locations[k]
+#                 name = k
+#
+#     return name, loc
+
+
+def load_locations(loc_path):
+    with open(loc_path, 'r') as fp:
+        rows = fp.readlines()
+    for row in rows:
+        aaa = [x.strip() for x in row.split(',')]
+        if len(aaa) == 3:
+            if aaa[2]:
+                __locations[aaa[2]] = (float(aaa[0]), float(aaa[1]))
+
+
 def parse_indoor_destination(destination_name):
     names = {
         "出口": "exit_sign",
@@ -160,9 +213,18 @@ def set_sub1(sub1):
     __sub1 = sub1
 
 
-def set_user_speaking(is_speaking):
+def __set_user_speaking(is_speaking):
     set_information('user_speaking', is_speaking)
     __sub1.set_user_speaking(is_speaking)
+
+
+# User will set to speaking immediately but stop speaking after 10 seconds
+def set_user_speaking(is_speaking):
+    if is_speaking:
+        __information['user_not_speaking_countdown'] = 0
+        __set_user_speaking(True)
+    else:
+        __information['user_not_speaking_countdown'] = 10
 
 
 def stop_outdoor_destination():
@@ -198,7 +260,10 @@ def start():
     __information['sub4_arrived'] = True
     __information['sub4_destination'] = None
     __information['user_speaking'] = False
+    __information['user_not_speaking_countdown'] = 0
     # set_indoor(True)
+
+    load_locations('./dialogue/data/location.txt')
 
     t = threading.Thread(target=__run)
     t.start()

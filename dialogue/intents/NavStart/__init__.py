@@ -1,15 +1,27 @@
-from dialogue import Speaker, NavHelper as map, Information
+from dialogue import Speaker, NavHelper, Information
 from dialogue.Destination import Destination
+import dialogue.Helper as Helper
 
 global destination
 destination = None
 
+
 def __find_place(place):
-    name, coord, dist = map.get_nearest_place(place)
-    if name is None or dist > 3000:
+    max_meters = 3000
+    name, coord, dist = NavHelper.get_nearest_place(place)
+    if name is None:
         return None
-    else:
+
+    name2, coord2 = Information.find_similar_location(name)
+    if name2:
+        d = NavHelper.get_walking_distance(coord2)
+        if d <= max_meters:
+            name, coord, dist = name2, coord2, d
+
+    if dist <= max_meters:
         return Destination(name, coord, dist)
+    else:
+        return None
 
 
 def __process_indoor(client, target):

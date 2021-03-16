@@ -1,5 +1,30 @@
 import logging
 import sys
+from difflib import SequenceMatcher
+from math import radians, cos, sin, asin, sqrt
+
+
+def distance(loc1, loc2):  # 经度1，纬度1，经度2，纬度2 （十进制度数）
+    """
+    Calculate the great circle distance between two points
+    on the earth (specified in decimal degrees)
+    """
+    # 将十进制度数转化为弧度
+    lon1, lat1, lon2, lat2 = map(radians, [loc1[0], loc1[1], loc2[0], loc2[1]])
+
+    # haversine公式
+    d_lon = lon2 - lon1
+    d_lat = lat2 - lat1
+    a = sin(d_lat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(d_lon / 2) ** 2
+    c = 2 * asin(sqrt(a))
+    r = 6371  # 地球平均半径，单位为公里
+    return c * r * 1000
+
+
+def similarity(a, b):
+    a = a.replace(" ", "")
+    b = b.replace(" ", "")
+    return SequenceMatcher(None, a, b).ratio()
 
 
 def is_arrived(curr, dest):

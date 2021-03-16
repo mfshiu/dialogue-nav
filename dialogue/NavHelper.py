@@ -27,7 +27,7 @@ def get_nearest_place(place):
         if test > 2:
             break
         loc1 = p['geometry']['location']['lat'], p['geometry']['location']['lng']
-        dist = get_walking_dustance(loc0, loc1)
+        dist = get_walking_distance(loc0, loc1)
         if dist < nearest[2]:
             nearest = p['name'], \
                       (p['geometry']['location']['lat'],
@@ -38,11 +38,18 @@ def get_nearest_place(place):
     return nearest
 
 
-def get_walking_dustance(coords_0, coords_1):
-    result = gmaps.directions(coords_0, coords_1, mode="walking")
-    if len(result) == 0 or len(result[0]['legs']) == 0:
-        return MAX_DISTANCE
-    return result[0]['legs'][0]['distance']['value']
+def get_walking_distance(coords_0, coords_1=None):
+    if not coords_1:
+        coords_1 = get_user_location()
+    distance = MAX_DISTANCE
+    try:
+        result = gmaps.directions(coords_0, coords_1, mode="walking")
+        if len(result) and len(result[0]['legs']):
+            distance = result[0]['legs'][0]['distance']['value']
+    except:
+        distance = MAX_DISTANCE
+
+    return distance
 
 
 def parse_destination_type(dest_name):
