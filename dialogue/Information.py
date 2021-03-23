@@ -219,12 +219,16 @@ def __set_user_speaking(is_speaking):
 
 
 # User will set to speaking immediately but stop speaking after 10 seconds
-def set_user_speaking(is_speaking):
+def set_user_speaking(is_speaking, shut_up_after_seconds=30):
     if is_speaking:
         __information['user_not_speaking_countdown'] = 0
         __set_user_speaking(True)
     else:
-        __information['user_not_speaking_countdown'] = 10
+        # if immediate:
+        #     __information['user_not_speaking_countdown'] = 0
+        #     __set_user_speaking(False)
+        # else:
+        __information['user_not_speaking_countdown'] = shut_up_after_seconds
 
 
 def stop_outdoor_destination():

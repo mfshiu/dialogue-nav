@@ -97,6 +97,9 @@ class DialogueClient:
         logger.info("Standby")
         if prompt:
             Speaker.play_async("如果需要協助再呼叫我。")
+            Information.set_user_speaking(False, 5)
+        else:
+            Information.set_user_speaking(False, 1)
         self._user_listener.listen_hotword()
 
 
