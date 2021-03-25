@@ -124,7 +124,7 @@ def get_indoor_destination_text(name):
         "elev_sign": "電梯",
         "sign": "",
         "platform": "月台",
-        "gate": "匣門",
+        "gate": "閘門",
     }
     if name in names:
         return names[name]
@@ -179,7 +179,7 @@ def parse_indoor_destination(destination_name):
         "危險": "dangerous_sign",
         "電梯": "elev_sign",
         "月台": "platform",
-        "匣門": "gate",
+        "閘門": "gate",
     }
     if destination_name in names:
         return names[destination_name]
