@@ -186,7 +186,7 @@ def parse_indoor_destination(destination_name):
     else:
         return None
 
-
+#
 def set_indoor_destination(dest):
     set_information('sub4_destination', dest)
     set_information('sub4_arrived', False)
