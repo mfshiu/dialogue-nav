@@ -1,3 +1,4 @@
+import os
 import threading
 import time
 import dialogue.Helper as Helper
@@ -185,13 +186,14 @@ def find_similar_location(name):
 
 
 def load_locations(loc_path):
-    with open(loc_path, 'r') as fp:
-        rows = fp.readlines()
-    for row in rows:
-        aaa = [x.strip() for x in row.split(',')]
-        if len(aaa) == 3:
-            if aaa[2]:
-                __locations[aaa[2]] = (float(aaa[0]), float(aaa[1]))
+    if os.path.isfile(loc_path):
+        with open(loc_path, 'r') as fp:
+            rows = fp.readlines()
+        for row in rows:
+            aaa = [x.strip() for x in row.split(',')]
+            if len(aaa) == 3:
+                if aaa[2]:
+                    __locations[aaa[2]] = (float(aaa[0]), float(aaa[1]))
 
 
 #
