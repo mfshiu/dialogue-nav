@@ -152,10 +152,10 @@ class Sub4(threading.Thread):
         kanbans = [
             [
                 {
-                    "name": "exit_sign",
-                    "direction": "front_left",
-                    "user_direction": "front",
-                    "distance": 5.2
+                    "name": 6,
+                    "direction": 2,
+                    "user_direction": 2,
+                    "distance": 5
                 },
                 {
                     "name": "wc_sign",
