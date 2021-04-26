@@ -4,6 +4,8 @@ import config
 import json
 from datetime import datetime
 
+from dialogue import Information
+
 
 def write_log(msg, ex=None):
     print("[%s] %s" % (str(datetime.now())[5:-3], msg))
@@ -47,6 +49,8 @@ class Sub1_api:
             self.awakable = "on" == data["status"]
         elif "indoor" == msg.topic:
             self.indoor = "on" == data["status"]
+        elif "kanban_indoor" == msg.topic:
+            Information.set_indoor_kanbans(data)
         elif "echo" == msg.topic:
             write_log("An echo got.")
 
