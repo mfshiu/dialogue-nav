@@ -24,6 +24,7 @@ class Sub4(threading.Thread):
             self.play_sound("己停止前往" + dest)
         Information.set_information("sub4_arrived", True)
 
+
     def gen_direction_text(self, direction):
         directions = {
             "front": "前方",
@@ -47,7 +48,11 @@ class Sub4(threading.Thread):
             "11": "十一點鐘方向",
             "12": "十二點鐘方向",
         }
-        return directions[direction]
+        key = str(direction)
+        if key in directions:
+            return directions[str(direction)]
+        else:
+            return "前方"
 
     def play_sound(self, msg, play_async=False):
         if not Speaker.is_playing():
