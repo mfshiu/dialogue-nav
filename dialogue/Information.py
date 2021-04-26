@@ -140,6 +140,20 @@ def get_indoor_destination_text(name):
         return "不明"
 
 
+def parse_indoor_destination(destination_name):
+    names = {
+        "出口": "5",
+        "廁所": "4",
+        # "危險": "dangerous_sign",
+        "電梯": "1",
+        "月台": "6",
+        "閘門": "6",
+    }
+    if destination_name in names:
+        return names[destination_name]
+    else:
+        return None
+
 def find_similar_location(name):
     threshold = 0.8
     s = 0
@@ -179,20 +193,6 @@ def load_locations(loc_path):
             if aaa[2]:
                 __locations[aaa[2]] = (float(aaa[0]), float(aaa[1]))
 
-
-def parse_indoor_destination(destination_name):
-    names = {
-        "出口": "exit_sign",
-        "廁所": "wc_sign",
-        "危險": "dangerous_sign",
-        "電梯": "elev_sign",
-        "月台": "platform",
-        "閘門": "gate",
-    }
-    if destination_name in names:
-        return names[destination_name]
-    else:
-        return None
 
 #
 def set_indoor_destination(dest):
