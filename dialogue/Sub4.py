@@ -52,7 +52,7 @@ class Sub4(threading.Thread):
         if key in directions:
             return directions[str(direction)]
         else:
-            return "前方"
+            return "不明方向"
 
     def play_sound(self, msg, play_async=False):
         if not Speaker.is_playing():
