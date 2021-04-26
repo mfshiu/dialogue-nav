@@ -62,7 +62,7 @@ class Sub4(threading.Thread):
             return None
         for kanban in viewed_kanbans:
             logger.debug("Kanban: %s", str(kanban))
-            if kanban_name == kanban["name"]:
+            if kanban_name == str(kanban["name"]):
                 return kanban
         return None
 
