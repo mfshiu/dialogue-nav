@@ -37,6 +37,7 @@ class Sub1_api:
         client.subscribe("location")
         client.subscribe("awakable")
         client.subscribe("indoor")
+        client.subscribe("kanban_indoor")
 
     def __on_message(self, client, db, msg):
         data = msg.payload.decode('utf-8', 'ignore')
