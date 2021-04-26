@@ -41,55 +41,6 @@ class UserListener(threading.Thread):
         logger.info("Stop listen hot word")
         HotWord.stop_listen()
 
-    def x__record(self, limit_seconds):
-        self.speaking = True
-        logger.info("---recording---")
-
-        while HotWord.is_listening():
-            self.__stop_listen_hotword()
-            logger.warn("Waiting hot word stop.")
-            time.sleep(1)
-
-        audio = pyaudio.PyAudio()
-        audio_stream = audio.open(format=FORMAT, channels=CHANNELS, rate=RATE,
-                                  input=True, frames_per_buffer=chunk)
-
-        d = []
-        # print((RATE / chunk) * RECORD_SECONDS)
-        limit_seconds = 2
-        total = RATE // chunk * limit_seconds
-        logger.debug("Total chunk: " + str(total))
-        for i in range(0, total):
-            time.sleep(0.03)
-            data = audio_stream.read(chunk)
-            d.append(data)
-
-        logger.debug("Done recording, chunk size: " + str(len(d)))
-        audio_stream.stop_stream()
-        audio_stream.close()
-        audio.terminate()
-
-        # Write to file
-        tag = datetime.now().strftime("%Y%m%d%H%M%S")
-        output_filename_wave = "./dialogue/user/msg-" + tag + ".wav"
-        output_filename_flac = "./dialogue/user/msg-" + tag + ".flac"
-        wf = wave.open(output_filename_wave, 'wb')
-        wf.setnchannels(CHANNELS)
-        wf.setsampwidth(audio.get_sample_size(FORMAT))
-        wf.setframerate(RATE)
-        wf.writeframes(b''.join(d))
-        wf.close()
-        logger.debug("Done wav writing: " + output_filename_wave)
-
-        from pydub import AudioSegment
-        song = AudioSegment.from_wav(output_filename_wave)
-        song.export(output_filename_flac, format="flac")
-        threading.Thread(target=lambda: os.remove(output_filename_wave)).start()
-        self.user_words.put(output_filename_flac)
-        logger.debug("Done flac writing: " + output_filename_wave)
-
-        self.speaking = False
-
     def __record(self, limit_seconds):
         self.speaking = True
         logger.info("---recording---")
@@ -150,7 +101,6 @@ class UserListener(threading.Thread):
         # Write to file
         tag = datetime.now().strftime("%Y%m%d%H%M%S")
         output_filename_wave = "./dialogue/user/msg-" + tag + ".wav"
-        output_filename_flac = "./dialogue/user/msg-" + tag + ".flac"
         wf = wave.open(output_filename_wave, 'wb')
         wf.setnchannels(CHANNELS)
         wf.setsampwidth(audio.get_sample_size(FORMAT))
@@ -161,6 +111,7 @@ class UserListener(threading.Thread):
 
         from pydub import AudioSegment
         song = AudioSegment.from_wav(output_filename_wave)
+        output_filename_flac = "./dialogue/user/msg-" + tag + ".flac"
         song.export(output_filename_flac, format="flac")
         # os.remove(output_filename_wave)
         threading.Thread(target=lambda: os.remove(output_filename_wave)).start()

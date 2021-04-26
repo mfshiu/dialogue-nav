@@ -118,13 +118,21 @@ def is_user_speaking():
 
 def get_indoor_destination_text(name):
     names = {
-        "exit_sign": "出口",
-        "wc_sign": "廁所",
-        "dangerous_sign": "危險",
+        "exit_sign": "出口標示",
+        "wc_sign": "廁所標示",
+        "dangerous_sign": "危險標示",
         "elev_sign": "電梯",
-        "sign": "",
+        "sign": "標示",
         "platform": "月台",
         "gate": "閘門",
+        "0": "箭頭標示",
+        "1": "電梯標示",
+        "2": "感應標示",
+        "3": "招牌",
+        "4": "廁所標示",
+        "5": "出口標示",
+        "6": "閘門",
+        "99": "障礙物",
     }
     if name in names:
         return names[name]

@@ -71,13 +71,26 @@ class Sub4(threading.Thread):
         if kanban["user_direction"] is not None:
             msg += self.gen_direction_text(kanban["user_direction"])
         if kanban["distance"] is not None:
-            msg += str(kanban["distance"]) + "公尺處"
+            msg += str(kanban["distance"]) + "步左右"
         if kanban["name"] is not None:
-            msg += "有一個" + Information.get_indoor_destination_text(kanban["name"]) + "標示"
+            msg += "有一個" + Information.get_indoor_destination_text(kanban["name"])
         if kanban["direction"] is not None:
             msg += "指向" + self.gen_direction_text(kanban["direction"])
         logger.info(msg)
-        Speaker.play_async(msg)
+        Speaker.play(msg)
+
+    def speak_obstacle(self, kanban):
+        msg = ""    # 前方N公尺處有障礙物，請轉向N點鐘方向
+        if kanban["distance"] is not None:
+            msg += "前方%s步左右有障礙物" % (str(kanban["distance"]),)
+        else:
+            msg += "前方有障礙物"
+
+        if kanban["user_direction"] is not None:
+            msg += "請轉向%s" % (self.gen_direction_text(kanban["user_direction"]),)
+
+        logger.info(msg)
+        Speaker.play(msg)
 
     def update_sim_kanbans(self):
         if not Information.is_indoor():
@@ -99,7 +112,7 @@ class Sub4(threading.Thread):
             if kanban is not None:
                 distance = kanban["distance"]
                 if distance is not None:
-                    if float(distance) < 1.5:
+                    if float(distance) <= 0:
                         logger.warn("Arrived.")
                         self.play_sound("您已經抵達" + kanban_name)
                         Information.set_information("sub4_arrived", True)
@@ -109,6 +122,10 @@ class Sub4(threading.Thread):
                     self.speak_kanban(kanban)
             else:
                 self.play_sound("我看不見有關" + kanban_name + "的標示", True)
+
+            obstacle = self.get_kanban("99")
+            if obstacle is not None:
+                self.speak_obstacle(obstacle)
 
         # if self.running:
         #     Timer(10, self.walk_timer).start()
