@@ -118,6 +118,7 @@ def is_user_speaking():
 
 
 def get_indoor_destination_text(name):
+    logger.debug("get_indoor_destination_text, name: %s", str(name))
     names = {
         "exit_sign": "出口標示",
         "wc_sign": "廁所標示",
@@ -135,10 +136,11 @@ def get_indoor_destination_text(name):
         "6": "閘門",
         "99": "障礙物",
     }
+    name = str(name)
     if name in names:
         return names[name]
     else:
-        return "不明"
+        return "不明標示"
 
 
 def parse_indoor_destination(destination_name):
