@@ -79,7 +79,7 @@ class Sub4(threading.Thread):
             msg += str(kanban["distance"]) + "步左右"
         if kanban["name"] is not None:
             msg += "有一個" + Information.get_indoor_destination_text(kanban["name"])
-        if kanban["direction"] is not None:
+        if "direction" in kanban and kanban["direction"] is not None:
             msg += "指向" + self.gen_direction_text(kanban["direction"])
         logger.info(msg)
         Speaker.play(msg)
