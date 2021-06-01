@@ -12,10 +12,11 @@ logger = get_module_logger(__name__)
 
 # os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue//vin-gmsx-ad3eb9c8c7e6.json"
 # os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue//NCU-AI-5e22fe333aae.json"
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue/ncu-ai2-315510-1ea8beab4f1a.json"
 # subprocess.check_call(['sqsub', '-np', sys.argv[1], '/path/to/executable'],
 #                       env=dict(os.environ, SQSUB_VAR="visible in this subprocess"))
 
-# client = texttospeech.TextToSpeechClient()
+client = texttospeech.TextToSpeechClient()
 
 global is_muted
 is_muted = False
@@ -61,17 +62,17 @@ def process_pyttsx3():
         __sound_message = None
 
 
-def __do_play(msg):
-    logger.debug("Speak 3: %s", msg)
-    global __sound_message
-
-    while __sound_message:
-        time.sleep(0.1)
-
-    __sound_message = msg
-
-    while __sound_message:
-        time.sleep(0.1)
+# def __do_play(msg):
+#     logger.debug("Speak 3: %s", msg)
+#     global __sound_message
+#
+#     while __sound_message:
+#         time.sleep(0.1)
+#
+#     __sound_message = msg
+#
+#     while __sound_message:
+#         time.sleep(0.1)
 
 
 # def __do_play(msg):
@@ -85,20 +86,20 @@ def __do_play(msg):
 #         __stop_playing()
 
 
-# def __do_play(msg):
-#     logger.debug("Speak: %s", msg)
-#
-#     output_file = ""
-#     try:
-#         audio_content = __tts(msg)
-#         output_file = __generate_sound_file(audio_content)
-#         __start_playing()
-#         playsound(output_file)
-#         os.remove(output_file)
-#     except:
-#         logger.error("Play sound error: %s", output_file)
-#     finally:
-#         __stop_playing()
+def __do_play(msg):
+    logger.debug("Speak: %s", msg)
+
+    output_file = ""
+    try:
+        audio_content = __tts(msg)
+        output_file = __generate_sound_file(audio_content)
+        __start_playing()
+        playsound(output_file)
+        os.remove(output_file)
+    except:
+        logger.error("Play sound error: %s", output_file)
+    finally:
+        __stop_playing()
 
 
 def __start_playing():
