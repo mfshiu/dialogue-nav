@@ -1,9 +1,13 @@
+import time
 from datetime import datetime
 from playsound import playsound
 import os
 from dialogue import Information
 from google.cloud import texttospeech
 from dialogue.Helper import get_module_logger
+import pyttsx3
+# from Sub3 import sub3_play_sound
+
 logger = get_module_logger(__name__)
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue//vin-gmsx-ad3eb9c8c7e6.json"
@@ -41,20 +45,60 @@ def __generate_sound_file(audio_content, file_path=None):
     return file_path
 
 
-def __do_play(msg):
-    logger.debug("Speak: %s", msg)
+global __sound_message
+__sound_message = None
 
-    output_file = ""
-    try:
-        audio_content = __tts(msg)
-        output_file = __generate_sound_file(audio_content)
+
+def process_pyttsx3():
+    global __sound_message
+
+    if __sound_message:
         __start_playing()
-        playsound(output_file)
-        os.remove(output_file)
-    except:
-        logger.error("Play sound error: %s", output_file)
-    finally:
+        engine = pyttsx3.init()
+        engine.say(__sound_message)
+        engine.runAndWait()
         __stop_playing()
+        __sound_message = None
+
+
+def __do_play(msg):
+    logger.debug("Speak 3: %s", msg)
+    global __sound_message
+
+    while __sound_message:
+        time.sleep(0.1)
+
+    __sound_message = msg
+
+    while __sound_message:
+        time.sleep(0.1)
+
+
+# def __do_play(msg):
+#     logger.debug("Speak 2: %s", msg)
+#     try:
+#         global __sound_messages
+#         __sound_messages.append(msg)
+#     except Exception as ex:
+#         logger.error("Play sound error, ", str(ex))
+#     finally:
+#         __stop_playing()
+
+
+# def __do_play(msg):
+#     logger.debug("Speak: %s", msg)
+#
+#     output_file = ""
+#     try:
+#         audio_content = __tts(msg)
+#         output_file = __generate_sound_file(audio_content)
+#         __start_playing()
+#         playsound(output_file)
+#         os.remove(output_file)
+#     except:
+#         logger.error("Play sound error: %s", output_file)
+#     finally:
+#         __stop_playing()
 
 
 def __start_playing():

@@ -1,4 +1,7 @@
 import threading
+
+import pyttsx3
+
 from dialogue import Helper
 import signal
 import time
@@ -37,6 +40,7 @@ class Sub3(threading.Thread):
                 Speaker.play(msg)
 
     def run(self):
+
         self.dialogue_client.start()
 
         # if self.is_simulation:
@@ -67,9 +71,21 @@ class Sub3(threading.Thread):
         logger.warning("terminating")
 
 
+def job():
+    engine = pyttsx3.init()
+    for i in range(3):
+        engine.say("執行緒")
+        engine.runAndWait()
+
+
+# if __name__ == '__main__':
+#     # manager = Manager()
+#     # sub3 = Sub3(manager.dict(), is_simulation=False)
+#     t = threading.Thread(target=job)
+#     t.start()
+#     t.join()
+
 if __name__ == '__main__':
-    # manager = Manager()
-    # sub3 = Sub3(manager.dict(), is_simulation=False)
     sub3 = Sub3(Sub1_api(), is_simulation=True)
 
     def signal_handler(signal, frame):
@@ -82,6 +98,12 @@ if __name__ == '__main__':
     def shutdown():
         sub3.terminate()
 
+    while sub3.running:
+        Speaker.process_pyttsx3()
+        time.sleep(0.1)
+
+    print("System terminated.")
+    # while self.running:
     # threading.Timer(5, shutdown).start()
 
 
