@@ -10,12 +10,12 @@ import pyttsx3
 
 logger = get_module_logger(__name__)
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue//vin-gmsx-ad3eb9c8c7e6.json"
+# os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue//vin-gmsx-ad3eb9c8c7e6.json"
 # os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue//NCU-AI-5e22fe333aae.json"
 # subprocess.check_call(['sqsub', '-np', sys.argv[1], '/path/to/executable'],
 #                       env=dict(os.environ, SQSUB_VAR="visible in this subprocess"))
 
-client = texttospeech.TextToSpeechClient()
+# client = texttospeech.TextToSpeechClient()
 
 global is_muted
 is_muted = False
