@@ -5,7 +5,8 @@ from dialogue.Helper import get_module_logger
 logger = get_module_logger(__name__)
 
 # os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue/NCU-AI-5e22fe333aae.json"
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue/vin-gmsx-ad3eb9c8c7e6.json"
+# os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue/vin-gmsx-ad3eb9c8c7e6.json"
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue/ncu-ai2-315510-1ea8beab4f1a.json"
 
 
 def __detect_intent_texts(project_id, session_id, texts, language_code):
@@ -103,7 +104,8 @@ def __detect_intent_stream(project_id, session_id, audio_file_path,
 
 
 LANGUAGE_CODE = "zh-TW"
-PROJECT_ID = "vin-gmsx"
+# PROJECT_ID = "vin-gmsx"
+PROJECT_ID = "ncu-ai2-315510"
 TEST_SESSION = "session1"
 
 
