@@ -11,8 +11,9 @@ import pyttsx3
 logger = get_module_logger(__name__)
 
 # os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue//vin-gmsx-ad3eb9c8c7e6.json"
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue//NCU-AI-3a285870a6aa.json"
 # os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue//NCU-AI-5e22fe333aae.json"
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue/ncu-ai2-315510-1ea8beab4f1a.json"
+# os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = "./dialogue/ncu-ai2-315510-1ea8beab4f1a.json"
 # subprocess.check_call(['sqsub', '-np', sys.argv[1], '/path/to/executable'],
 #                       env=dict(os.environ, SQSUB_VAR="visible in this subprocess"))
 

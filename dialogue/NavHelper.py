@@ -1,8 +1,8 @@
 import googlemaps
 import dialogue.Information as info
 
-# gmaps = googlemaps.Client(key='AIzaSyCINyXxM17YsQbc-AozygwX9japfzZi0DQ')
-gmaps = googlemaps.Client(key='AIzaSyBT2Xv-iudTChTFWlLztkxPqAlssCOmCp4')
+gmaps = googlemaps.Client(key='AIzaSyCINyXxM17YsQbc-AozygwX9japfzZi0DQ')
+# gmaps = googlemaps.Client(key='AIzaSyBT2Xv-iudTChTFWlLztkxPqAlssCOmCp4')
 MAX_DISTANCE = 99999
 
 
