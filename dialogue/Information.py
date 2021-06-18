@@ -18,10 +18,10 @@ logger.debug("__init__")
 
 
 def __log_timer():
-    logger.debug("Information values ==>")
-    for key in __information:
-        value = __information[key]
-        logger.debug("%20s: %s", key, str(value))
+    # logger.debug("Information values ==>")
+    # for key in __information:
+    #     value = __information[key]
+    #     logger.debug("%20s: %s", key, str(value))
     if __running:
         Timer(5, __log_timer).start()
 
