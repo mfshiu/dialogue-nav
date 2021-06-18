@@ -55,12 +55,27 @@ def process_pyttsx3():
     global __sound_message
 
     if __sound_message:
-        __start_playing()
         engine = pyttsx3.init()
-        engine.say(__sound_message)
+        voice = engine.getProperty('voice')
+        voices = engine.getProperty('voices')
+        for item in voices:
+            print(item.id, item.languages)
+        engine.setProperty('voice', 'en')
+        engine.say('Hello world')
+        engine.say('123456')
         engine.runAndWait()
-        __stop_playing()
         __sound_message = None
+
+# def process_pyttsx3():
+#     global __sound_message
+#
+#     if __sound_message:
+#         __start_playing()
+#         engine = pyttsx3.init()
+#         engine.say(__sound_message)
+#         engine.runAndWait()
+#         __stop_playing()
+#         __sound_message = None
 
 
 # def __do_play(msg):

@@ -42,13 +42,7 @@ class Sub1_api:
     def __on_message(self, client, db, msg):
         data = msg.payload.decode('utf-8', 'ignore')
         write_log("topic: %s, data: %s" % (msg.topic, data))
-        if data:
-            try:
-                data = json.loads(data)
-            except:
-                write_log("[ERROR] json.loads(data)")
-                topic = ""
-                data = {}
+        data = json.loads(data)
 
         if "location" == msg.topic:
             self.location = ([data["lat"], data["lng"]], [True])
@@ -110,5 +104,5 @@ class Sub1_api:
         return self.arrived
 
     
-if __name__ == '__main__':
+if __name__=='__main__':
     sub1_api = Sub1_api()

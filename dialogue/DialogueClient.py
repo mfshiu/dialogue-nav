@@ -78,6 +78,7 @@ class DialogueClient:
 
     def start(self):
         Speaker.play_async("HI，我叫小美，你好。")
+        # Speaker.play_async("HI How are you")
 
         self._user_listener = UserListener.UserListener(args=(self.user_words,))
         self._user_listener.start()
