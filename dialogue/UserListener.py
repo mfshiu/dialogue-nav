@@ -68,7 +68,7 @@ class UserListener(threading.Thread):
             time.sleep(wait_seconds)
             try:
                 buffer2 = audio_stream.read(chunk)
-                buffer = bytearray([x if x > 5 else 0 for x in buffer2])
+                buffer = bytearray([x if x > 10 else 0 for x in buffer2])
                 # print("buffer:", buffer)
             except Exception as ex:
                 logger.error("Read audio stream error!\n%s", str(ex))
