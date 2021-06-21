@@ -68,13 +68,13 @@ class UserListener(threading.Thread):
             time.sleep(wait_seconds)
             try:
                 buffer2 = audio_stream.read(chunk)
-                buffer = bytearray([x if x > 10 else 0 for x in buffer2])
+                buffer = bytearray([x if x > 0 else 0 for x in buffer2])
                 # print("buffer:", buffer)
             except Exception as ex:
                 logger.error("Read audio stream error!\n%s", str(ex))
                 break
 
-            # Check silence
+            # Check silence 2
             zero_count = buffer.count(0)  # Get zero count in buffer
             if is_start_speaking:
                 if zero_count < VOICE_THRESHOLD:
