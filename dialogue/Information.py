@@ -126,14 +126,15 @@ def get_indoor_destination_text(name):
         "elev_sign": "電梯",
         "sign": "標示",
         "platform": "月台",
-        "gate": "閘門",
+        "gate": "入口",
         "0": "箭頭標示",
         "1": "電梯標示",
         "2": "感應標示",
         "3": "招牌",
         "4": "廁所標示",
         "5": "出口標示",
-        "6": "閘門",
+        "6": "入口",
+        "7": "月台",
         "99": "障礙物",
     }
     name = str(name)
@@ -149,8 +150,8 @@ def parse_indoor_destination(destination_name):
         "廁所": "4",
         # "危險": "dangerous_sign",
         "電梯": "1",
-        "月台": "6",
-        "閘門": "6",
+        "月台": "7",
+        "入口": "6",
     }
     if destination_name in names:
         return names[destination_name]
