@@ -72,6 +72,9 @@ class Sub4(threading.Thread):
         return None
 
     def speak_kanban(self, kanban):
+        if Information.is_user_speaking():
+            return
+
         msg = ""    # msg = format("%s方%s公尺處，有一個%s標示指向%s方")
         if kanban["user_direction"] is not None:
             msg += self.gen_direction_text(kanban["user_direction"])
@@ -126,7 +129,8 @@ class Sub4(threading.Thread):
                 else:
                     self.speak_kanban(kanban)
             else:
-                self.play_sound("我看不見有關" + kanban_name + "的標示", True)
+                if not Information.is_user_speaking():
+                    self.play_sound("我看不見有關" + kanban_name + "的標示", True)
 
             obstacle = self.get_kanban("99")
             if obstacle is not None:

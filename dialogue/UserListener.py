@@ -1,4 +1,6 @@
 import threading
+
+import config
 from dialogue import HotWord, Speaker, Information
 import time
 import pyaudio
@@ -64,11 +66,16 @@ class UserListener(threading.Thread):
         silence_count_threshold = chunk_count_per_second * 0.25
         wait_seconds = chunk / RATE * 0.95
         logger.debug("Total chunk: %d, Silence chunk: %f, Wait seconds: %f" % (total_chunks, silence_count_threshold, wait_seconds))
+        if hasattr(config, 'env_noise'):
+            env_noize = config.env_noise
+        else:
+            env_noize = 5
+        logger.debug("env_noize: %s" % (env_noize,))
         for i in range(0, total_chunks):
             time.sleep(wait_seconds)
             try:
                 buffer2 = audio_stream.read(chunk)
-                buffer = bytearray([x if x > 0 else 0 for x in buffer2])
+                buffer = bytearray([x if x > env_noize else 0 for x in buffer2])
                 # print("buffer:", buffer)
             except Exception as ex:
                 logger.error("Read audio stream error!\n%s", str(ex))
@@ -146,7 +153,7 @@ class UserListener(threading.Thread):
                 Speaker.unmute()
                 self.job_count = 0
                 time.sleep(1)
-            time.sleep(0.1)
+            time.sleep(0.01)
         logger.info("terminated")
 
     def listen(self, limit_seconds=10):
