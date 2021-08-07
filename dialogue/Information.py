@@ -18,10 +18,10 @@ logger.debug("__init__")
 
 
 def __log_timer():
-    # logger.debug("Information values ==>")
-    # for key in __information:
-    #     value = __information[key]
-    #     logger.debug("%20s: %s", key, str(value))
+    logger.debug("Information values ==>")
+    for key in __information:
+        value = __information[key]
+        logger.debug("%20s: %s", key, str(value))
     if __running:
         Timer(5, __log_timer).start()
 
@@ -237,11 +237,10 @@ def set_user_speaking(is_speaking, shut_up_after_seconds=30):
         __information['user_not_speaking_countdown'] = 0
         __set_user_speaking(True)
     else:
-        # if immediate:
-        #     __information['user_not_speaking_countdown'] = 0
-        #     __set_user_speaking(False)
-        # else:
-        __information['user_not_speaking_countdown'] = shut_up_after_seconds
+        if is_indoor():
+            __set_user_speaking(False)
+        else:
+            __information['user_not_speaking_countdown'] = shut_up_after_seconds
 
 
 def stop_outdoor_destination():

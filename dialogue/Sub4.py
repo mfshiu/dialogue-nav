@@ -1,3 +1,4 @@
+from datetime import datetime
 import threading
 import time
 from dialogue import Speaker, Helper, Information
@@ -16,6 +17,8 @@ class Sub4(threading.Thread):
             self.sim_kanbans_index = 0
             self.sim_kanbans = self.read_sim_kanbans()
         self.running = True
+        self.last_kanban_msg = ""
+        self.last_kanban_msg_time = datetime.now()
         return
 
     def cancel_destination(self):
@@ -55,6 +58,18 @@ class Sub4(threading.Thread):
             return "不明方向"
 
     def play_sound(self, msg, play_async=False):
+        # logger.debug("play_sound: 0")
+        now = datetime.now()
+        if msg == self.last_kanban_msg:
+            # logger.debug("play_sound: 1")
+            diff = now - self.last_kanban_msg_time
+            if diff.total_seconds() < 8:
+                logger.warning("Skip message: " + msg)
+                return
+
+        self.last_kanban_msg = msg
+        self.last_kanban_msg_time = now
+
         if not Speaker.is_playing():
             if play_async:
                 Speaker.play_async(msg)
@@ -84,8 +99,10 @@ class Sub4(threading.Thread):
             msg += "有一個" + Information.get_indoor_destination_text(kanban["name"])
         if "direction" in kanban and kanban["direction"] is not None:
             msg += "指向" + self.gen_direction_text(kanban["direction"])
+
         logger.info(msg)
-        Speaker.play(msg)
+        self.play_sound(msg)
+        # Speaker.play(msg)
 
     def speak_obstacle(self, kanban):
         msg = ""    # 前方N公尺處有障礙物，請轉向N點鐘方向
@@ -98,9 +115,11 @@ class Sub4(threading.Thread):
             msg += "請轉向%s" % (self.gen_direction_text(kanban["user_direction"]),)
 
         logger.info(msg)
-        Speaker.play(msg)
+        self.play_sound(msg)
+        # Speaker.play(msg)
 
     def update_sim_kanbans(self):
+        logger.debug("update_sim_kanbans: 0")
         if not Information.is_indoor():
             return  # Not indoor, don't update
 
@@ -112,6 +131,7 @@ class Sub4(threading.Thread):
         # logger.debug("Viewed kanbans: %s", json.dumps(kanban))
 
     def walk_timer(self):
+        # logger.debug("walk_timer begin")
         arrived = Information.get_information('sub4_arrived')
         if not arrived:
             dest = Information.get_information('sub4_destination')
@@ -129,7 +149,9 @@ class Sub4(threading.Thread):
                 else:
                     self.speak_kanban(kanban)
             else:
+                # logger.debug("walk_timer 1, is_user_speaking: %s" % (Information.is_user_speaking(),))
                 if not Information.is_user_speaking():
+                    # logger.debug("walk_timer 2")
                     self.play_sound("我看不見有關" + kanban_name + "的標示", True)
 
             obstacle = self.get_kanban("99")
@@ -144,7 +166,7 @@ class Sub4(threading.Thread):
             if self.is_simulation:
                 self.update_sim_kanbans()
             self.walk_timer()
-            time.sleep(8)
+            time.sleep(1)
         logger.info("terminated")
         return
 
@@ -162,7 +184,7 @@ class Sub4(threading.Thread):
                     "distance": 5
                 },
                 {
-                    "name": "wc_sign",
+                    "name": "4",
                     "direction": "right",
                     "user_direction": "front",
                     "distance": 3.3
@@ -176,7 +198,7 @@ class Sub4(threading.Thread):
             ],
             [
                 {
-                    "name": "wc_sign",
+                    "name": "4",
                     "direction": "right",
                     "user_direction": "front",
                     "distance": 2.5
@@ -196,7 +218,7 @@ class Sub4(threading.Thread):
             ],
             [
                 {
-                    "name": "wc_sign",
+                    "name": "4",
                     "direction": "back_right",
                     "user_direction": "front_left",
                     "distance": 5.0
@@ -216,7 +238,7 @@ class Sub4(threading.Thread):
             ],
             [
                 {
-                    "name": "wc_sign",
+                    "name": "4",
                     "direction": "front_left",
                     "user_direction": "front",
                     "distance": 4.3
@@ -256,7 +278,7 @@ class Sub4(threading.Thread):
             ],
             [
                 {
-                    "name": "wc_sign",
+                    "name": "4",
                     "direction": "front",
                     "user_direction": "front",
                     "distance": 0.5
