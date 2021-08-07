@@ -1,9 +1,10 @@
-import time
 from datetime import datetime
 from playsound import playsound
 import os
 from dialogue import Information
 from google.cloud import texttospeech
+# import pygame
+
 from dialogue.Helper import get_module_logger
 import pyttsx3
 # from Sub3 import sub3_play_sound
@@ -31,9 +32,15 @@ voice = texttospeech.VoiceSelectionParams(
 
 audio_config = texttospeech.AudioConfig(
     audio_encoding=texttospeech.AudioEncoding.MP3,
-    speaking_rate=1.2
+    speaking_rate=1.2,
+    volume_gain_db=0.0
 )
 
+audio_config_quieter = texttospeech.AudioConfig(
+    audio_encoding=texttospeech.AudioEncoding.MP3,
+    speaking_rate=1.2,
+    volume_gain_db=-1.5
+)
 
 def __generate_sound_file(audio_content, file_path=None):
     if file_path is None:
@@ -66,56 +73,45 @@ def process_pyttsx3():
         engine.runAndWait()
         __sound_message = None
 
-# def process_pyttsx3():
-#     global __sound_message
-#
-#     if __sound_message:
-#         __start_playing()
-#         engine = pyttsx3.init()
-#         engine.say(__sound_message)
-#         engine.runAndWait()
-#         __stop_playing()
-#         __sound_message = None
 
-
-# def __do_play(msg):
-#     logger.debug("Speak 3: %s", msg)
-#     global __sound_message
-#
-#     while __sound_message:
-#         time.sleep(0.1)
-#
-#     __sound_message = msg
-#
-#     while __sound_message:
-#         time.sleep(0.1)
-
-
-# def __do_play(msg):
-#     logger.debug("Speak 2: %s", msg)
-#     try:
-#         global __sound_messages
-#         __sound_messages.append(msg)
-#     except Exception as ex:
-#         logger.error("Play sound error, ", str(ex))
-#     finally:
-#         __stop_playing()
-
-
-def __do_play(msg):
+def __do_play(msg, quieter=False):
     logger.debug("Speak: %s", msg)
 
     output_file = ""
     try:
-        audio_content = __tts(msg)
+        audio_content = __tts(msg, quieter)
         output_file = __generate_sound_file(audio_content)
+        # output_file = 'file://' + pathname2url(os.path.abspath(output_file))
         __start_playing()
+
         playsound(output_file)
+        # pygame.init()
+        # pygame.mixer.init()
+        # sound = pygame.mixer.Sound(output_file)
+        # # sound.set_volume(0.5)  # Now plays at 90% of full volume.
+        # sound.play()
+
         os.remove(output_file)
     except Exception as ex:
         logger.error("Play sound error, filename: %s, ex: %s", output_file, ex)
     finally:
         __stop_playing()
+
+
+# def __do_play(msg):
+#     logger.debug("Speak: %s", msg)
+#
+#     output_file = ""
+#     try:
+#         audio_content = __tts(msg)
+#         output_file = __generate_sound_file(audio_content)
+#         __start_playing()
+#         playsound(output_file)
+#         os.remove(output_file)
+#     except Exception as ex:
+#         logger.error("Play sound error, filename: %s, ex: %s", output_file, ex)
+#     finally:
+#         __stop_playing()
 
 
 def __start_playing():
@@ -130,10 +126,11 @@ def __stop_playing():
     _is_playing = False
 
 
-def __tts(msg):
+def __tts(msg, quieter=False):
     synthesis_input = texttospeech.SynthesisInput(text=msg)
+    config = audio_config_quieter if quieter else audio_config
     response = client.synthesize_speech(
-        input=synthesis_input, voice=voice, audio_config=audio_config
+        input=synthesis_input, voice=voice, audio_config=config
     )
     return response.audio_content
 
@@ -152,9 +149,9 @@ def unmute():
     is_muted = False
 
 
-def play(msg):
-    if not is_muted:
-        __do_play(msg)
+def play(msg, quieter=False):
+    if not is_muted:  # and not is_playing():
+        __do_play(msg, quieter)
     return
 
 

@@ -57,7 +57,7 @@ class Sub4(threading.Thread):
         else:
             return "不明方向"
 
-    def play_sound(self, msg, play_async=False):
+    def play_sound(self, msg, play_async=False, quieter=False):
         # logger.debug("play_sound: 0")
         now = datetime.now()
         if msg == self.last_kanban_msg:
@@ -74,17 +74,17 @@ class Sub4(threading.Thread):
             if play_async:
                 Speaker.play_async(msg)
             else:
-                Speaker.play(msg)
+                Speaker.play(msg, quieter)
 
     def get_kanban(self, kanban_name):
         viewed_kanbans = Information.get_indoor_kanbans()
         if viewed_kanbans is None:
             return None
         for kanban in viewed_kanbans:
-            if "name" in kanban:
                 logger.debug("Kanban: %s", str(kanban))
-                if kanban_name == str(kanban["name"]):
-                    return kanban
+                if "name" in kanban:
+                    if kanban_name == str(kanban["name"]):
+                        return kanban
         return None
 
     def speak_kanban(self, kanban):
@@ -102,7 +102,7 @@ class Sub4(threading.Thread):
             msg += "指向" + self.gen_direction_text(kanban["direction"])
 
         logger.info(msg)
-        self.play_sound(msg)
+        self.play_sound(msg, quieter=True)
         # Speaker.play(msg)
 
     def speak_obstacle(self, kanban):
@@ -153,7 +153,7 @@ class Sub4(threading.Thread):
                 # logger.debug("walk_timer 1, is_user_speaking: %s" % (Information.is_user_speaking(),))
                 if not Information.is_user_speaking():
                     # logger.debug("walk_timer 2")
-                    self.play_sound("我看不見有關" + kanban_name + "的標示", True)
+                    self.play_sound("我看不見有關" + kanban_name + "的標示", quieter=True)
 
             obstacle = self.get_kanban("99")
             if obstacle is not None:
@@ -167,7 +167,7 @@ class Sub4(threading.Thread):
             if self.is_simulation:
                 self.update_sim_kanbans()
             self.walk_timer()
-            time.sleep(1)
+            time.sleep(3)
         logger.info("terminated")
         return
 
