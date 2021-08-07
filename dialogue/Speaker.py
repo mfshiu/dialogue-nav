@@ -112,8 +112,8 @@ def __do_play(msg):
         __start_playing()
         playsound(output_file)
         os.remove(output_file)
-    except:
-        logger.error("Play sound error: %s", output_file)
+    except Exception as ex:
+        logger.error("Play sound error, filename: %s, ex: %s", output_file, ex)
     finally:
         __stop_playing()
 
