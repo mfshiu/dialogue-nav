@@ -81,9 +81,10 @@ class Sub4(threading.Thread):
         if viewed_kanbans is None:
             return None
         for kanban in viewed_kanbans:
-            logger.debug("Kanban: %s", str(kanban))
-            if kanban_name == str(kanban["name"]):
-                return kanban
+            if "name" in kanban:
+                logger.debug("Kanban: %s", str(kanban))
+                if kanban_name == str(kanban["name"]):
+                    return kanban
         return None
 
     def speak_kanban(self, kanban):
