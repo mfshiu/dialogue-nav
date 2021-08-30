@@ -58,6 +58,8 @@ class Sub1_api:
             self.indoor = "on" == data["status"]
         elif "kanban_indoor" == msg.topic:
             Information.set_indoor_kanbans(data)
+        elif "arrived" == msg.topic:
+            self.__set_arrived()
         elif "echo" == msg.topic:
             write_log("An echo got.")
 

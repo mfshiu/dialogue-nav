@@ -49,7 +49,7 @@ class Sub3(threading.Thread):
         self.sub4 = Sub4(self.is_simulation)
         self.sub4.start()
 
-        Information.set_indoor(True)
+        Information.set_indoor(False)
 
         while self.running:
             if self.dialogue_client.is_terminated:
