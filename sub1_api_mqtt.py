@@ -87,15 +87,22 @@ class Sub1_api:
 
     def set_destination(self, dest):
         self.destination = dest
-        self.arrived = False
 
-        payload = {
-            "lat": dest[0],
-            "lng": dest[1],
-            "type": dest[2],
-        }
-        self.client.publish("destination", json.dumps(payload))
-        self.client.publish("arrived", json.dumps({"status": "off"}))
+        if dest:
+            self.arrived = False
+
+            payload = {
+                "lat": dest[0],
+                "lng": dest[1],
+                "type": dest[2],
+            }
+            self.client.publish("destination", json.dumps(payload))
+            self.client.publish("arrived", json.dumps({"status": "off"}))
+        else:
+            self.arrived = True
+            self.client.publish("destination", "")
+            self.client.publish("arrived", json.dumps({"status": "on"}))
+
 
     def is_indoor(self):
         return self.indoor

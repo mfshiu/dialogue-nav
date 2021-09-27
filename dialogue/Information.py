@@ -211,14 +211,15 @@ def stop_indoor_destination():
 
 
 def set_outdoor_destination(coordinate, dest_type):
-    if coordinate is None:
-        set_information('sub1_destination', None)
-    else:
+    if coordinate:
         dest = (coordinate[0], coordinate[1], dest_type)
         # set_information('sub1_arrived', False)
         set_information('sub1_destination', dest)
         __sub1.set_destination(dest)
         # set_information('sub1_arrived', False)
+    else:
+        set_information('sub1_destination', None)
+        __sub1.set_destination(None)
 
 
 def set_sub1(sub1):

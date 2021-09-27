@@ -33,16 +33,18 @@ class DialogueClient:
 
         dest = self.destinations.pop()
         Speaker.play("您已經抵達" + dest.name)
-        count = len(self.destinations)
-        if count > 0:
-            next_dest = self.destinations[count - 1]
-            Speaker.play("接下來我們將繼續前往" + next_dest.name)
-            Speaker.play("現在開始請聽我的指示前進")
-            Information.set_outdoor_destination(next_dest.coordinate, next_dest.dest_type)
-        else:
-            # Speaker.play("您已經在室內")
-            # Information.set_indoor(True)
-            self.standby(True)
+        self.destinations.clear()
+        # 取消 2021/9/27
+        # count = len(self.destinations)
+        # if count > 0:
+        #     next_dest = self.destinations[count - 1]
+        #     Speaker.play("接下來我們將繼續前往" + next_dest.name)
+        #     Speaker.play("現在開始請聽我的指示前進")
+        #     Information.set_outdoor_destination(next_dest.coordinate, next_dest.dest_type)
+        # else:
+        #     self.standby(True)
+        Information.set_outdoor_destination(None, None)
+        self.standby(True)
 
     def __arrived_indoor(self, key, value):
         if Information.get_indoor_destination() is None:
