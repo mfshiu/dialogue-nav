@@ -1,3 +1,4 @@
+import os
 import queue
 from dialogue import Speaker, UserListener, Information, UserProcessor, Dialogflow, NavHelper
 
@@ -81,6 +82,11 @@ class DialogueClient:
     def start(self):
         Speaker.play_async("HI，我叫小美，你好。")
         # Speaker.play_async("HI How are you")
+
+        if not os.path.exists("user"):
+            os.makedirs("user")
+        if not os.path.exists("output"):
+            os.makedirs("output")
 
         self._user_listener = UserListener.UserListener(args=(self.user_words,))
         self._user_listener.start()
