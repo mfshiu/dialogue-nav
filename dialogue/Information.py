@@ -121,7 +121,7 @@ def get_indoor_destination_text(name):
     logger.debug("get_indoor_destination_text, name: %s", str(name))
     names = {
         "exit_sign": "出口",
-        "wc_sign": "廁所",
+        "wc_sign": "無障礙廁所",
         "dangerous_sign": "危險",
         "elev_sign": "電梯",
         "sign": "標示",
@@ -131,10 +131,12 @@ def get_indoor_destination_text(name):
         "1": "電梯",
         "2": "感應",
         "3": "招牌",
-        "4": "廁所",
+        "4": "無障礙廁所",
         "5": "出口",
         "6": "入口",
         "7": "月台",
+        "8": "中壢",
+        "9": "台北",
         "99": "障礙物",
     }
     name = str(name)
@@ -152,6 +154,8 @@ def parse_indoor_destination(destination_name):
         "電梯": "1",
         "月台": "7",
         "入口": "6",
+        "中壢": "8",
+        "台北": "9",
     }
     if destination_name in names:
         return names[destination_name]
@@ -187,16 +191,43 @@ def find_similar_location(name):
 #
 #     return name, loc
 
-
 def load_locations(loc_path):
-    if os.path.isfile(loc_path):
-        with open(loc_path, 'r') as fp:
-            rows = fp.readlines()
-        for row in rows:
-            aaa = [x.strip() for x in row.split(',')]
-            if len(aaa) == 3:
-                if aaa[2]:
-                    __locations[aaa[2]] = (float(aaa[0]), float(aaa[1]))
+    rows = [
+        # '24.960162, 121.166425, 7-ELEVEN 雙嶺門市',
+        # '24.960022, 121.166404, 全家便利商店-中壢過嶺店',
+        # '25.006505, 121.472863, 全家便利商店小和漢陽店',
+        '25.02303280351437, 121.22138864824944, 全家便利商店 大園領航店',
+        # '25.023008470614954, 121.22141477583213, 全家便利商店 大園領航店',
+        '25.023851116389658, 121.22121641510186, 捷運領航站',  # '25.0241316, 121.22154358333333, 捷運領航站',
+        '25.020353, 121.222749, 7-ELEVEN 城邑門市'
+    ]
+
+    #        '25.023026704865906, 121.2214073580765, 全家便利商店 大園領航店',
+    #    '25.023851116389658, 121.22121641510186, 捷運領航站',    # '25.0241316, 121.22154358333333, 捷運領航站',
+    #    '25.020353, 121.222749, 7-ELEVEN 城邑門市'
+    # Kevin set GPS point:
+    # A17 family: 25.023074566666665, 121.22144731666667
+    # A17 Mrt: 25.0241316, 121.22154358333333
+
+    # ver1:
+    #       '25.023101667, 121.2214175, 全家便利商店 大園領航店',
+    #   '25.0241316, 121.22154358333333, 捷運領航站'
+    for row in rows:
+        print('load_locations, row: %s' % (row,))
+        aaa = [x.strip() for x in row.split(',')]
+        if len(aaa) == 3:
+            if aaa[2]:
+                __locations[aaa[2]] = (float(aaa[0]), float(aaa[1]))
+
+# def load_locations(loc_path):
+#     if os.path.isfile(loc_path):
+#         with open(loc_path, 'r') as fp:
+#             rows = fp.readlines()
+#         for row in rows:
+#             aaa = [x.strip() for x in row.split(',')]
+#             if len(aaa) == 3:
+#                 if aaa[2]:
+#                     __locations[aaa[2]] = (float(aaa[0]), float(aaa[1]))
 
 
 #

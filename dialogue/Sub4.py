@@ -97,9 +97,10 @@ class Sub4(threading.Thread):
         if kanban["distance"] is not None:
             msg += str(kanban["distance"]) + "步左右"
         if kanban["name"] is not None:
-            msg += "有一個" + Information.get_indoor_destination_text(kanban["name"])
+            msg += "有一個" + Information.get_indoor_destination_text(kanban["name"]) + "標示"
         if "direction" in kanban and kanban["direction"] is not None:
             msg += "指向" + self.gen_direction_text(kanban["direction"])
+            msg += "，請依指示轉彎後繼續前進"
 
         logger.info(msg)
         self.play_sound(msg, quieter=True)
@@ -153,7 +154,7 @@ class Sub4(threading.Thread):
                 # logger.debug("walk_timer 1, is_user_speaking: %s" % (Information.is_user_speaking(),))
                 if not Information.is_user_speaking():
                     # logger.debug("walk_timer 2")
-                    self.play_sound("我看不見有關" + kanban_name + "的標示", quieter=True)
+                    self.play_sound("我看不見有關" + kanban_name + "的標示，請看看四週或往前走一下", quieter=True)
 
             obstacle = self.get_kanban("99")
             if obstacle is not None:
@@ -179,7 +180,7 @@ class Sub4(threading.Thread):
         kanbans = [
             [
                 {
-                    "name": 6,
+                    "name": 8,
                     "direction": 2,
                     "user_direction": 2,
                     "distance": 5
@@ -199,7 +200,7 @@ class Sub4(threading.Thread):
             ],
             [
                 {
-                    "name": "4",
+                    "name": "9",
                     "direction": "right",
                     "user_direction": "front",
                     "distance": 2.5
@@ -219,7 +220,7 @@ class Sub4(threading.Thread):
             ],
             [
                 {
-                    "name": "4",
+                    "name": "8",
                     "direction": "back_right",
                     "user_direction": "front_left",
                     "distance": 5.0
@@ -239,7 +240,7 @@ class Sub4(threading.Thread):
             ],
             [
                 {
-                    "name": "4",
+                    "name": "9",
                     "direction": "front_left",
                     "user_direction": "front",
                     "distance": 4.3

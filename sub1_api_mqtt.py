@@ -34,6 +34,7 @@ class Sub1_api:
     def __on_connect(self, client, userdata, flags, rc):
         write_log("Connected with result code " + str(rc))
         client.subscribe("echo")
+        client.subscribe("arrived")
         client.subscribe("location")
         client.subscribe("awakable")
         client.subscribe("indoor")
@@ -59,7 +60,7 @@ class Sub1_api:
         elif "kanban_indoor" == msg.topic:
             Information.set_indoor_kanbans(data)
         elif "arrived" == msg.topic:
-            self.__set_arrived()
+            self.arrived = "on" == data["status"]
         elif "echo" == msg.topic:
             write_log("An echo got.")
 
