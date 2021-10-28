@@ -14,6 +14,8 @@ def implement_intent(client, query_result):
 
     if len(all_kanbans) == 0:
         msg = "前方看不見任何標示，請轉頭看看四週"
+        Speaker.play(msg)
+        client.standby()
     else:
         if len(all_kanbans) == 1:
             msg = "前面的指標只有一個" + all_kanbans[0] + "標示"
@@ -21,6 +23,5 @@ def implement_intent(client, query_result):
             msg = "前面的指標有" + ",".join(all_kanbans[:-1])
             msg += "和" + all_kanbans[-1]
         msg += ", 請告訴我你想去的地方"
-
-    Speaker.play(msg)
-    client.listen_user()
+        Speaker.play(msg)
+        client.listen_user()
