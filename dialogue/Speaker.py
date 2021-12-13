@@ -1,3 +1,4 @@
+import time
 from datetime import datetime
 from playsound import playsound
 import os
@@ -150,7 +151,10 @@ def unmute():
 
 
 def play(msg, quieter=False):
+    # __do_play(msg, quieter)
     if not is_muted:  # and not is_playing():
+        # while is_playing():
+        #     time.sleep(0.1)
         __do_play(msg, quieter)
     return
 

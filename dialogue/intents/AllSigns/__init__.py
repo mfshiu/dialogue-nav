@@ -4,7 +4,7 @@ logger = Helper.get_module_logger(__name__)
 
 
 def implement_intent(client, query_result):
-    kanbans = Information.get_indoor_kanbans()
+    kanbans = Information.get_indoor_kanbans() or []
 
     all_kanbans = []
     for k in kanbans:

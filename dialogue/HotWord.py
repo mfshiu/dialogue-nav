@@ -17,7 +17,7 @@ def is_listening():
     return listening
 
 
-def start_listen(model, detected_callback):
+def start_listen(model, detected_callback, audio_input_callback=None):
     logger.info("Start listen")
     if is_listening():
         logger.warning('Hotword detector is listening.')
@@ -31,6 +31,7 @@ def start_listen(model, detected_callback):
     detector = snowboydecoder.HotwordDetector(model, sensitivity=0.5)
     detector.start(detected_callback=detected_callback,
                    interrupt_check=interrupt_callback,
+                   audio_input_callback=audio_input_callback,
                    sleep_time=0.03)
 
     detector.terminate()

@@ -10,7 +10,7 @@ logger = Helper.get_module_logger(__name__)
 class Sub4(threading.Thread):
     def __init__(self, is_simulation):
         super(Sub4, self).__init__()
-        logger.debug("__init__")
+        logger.debug("__init__, is_simulation:%s"%(is_simulation,))
         self.current_location = (0, 0)
         self.is_simulation = is_simulation
         if self.is_simulation:
@@ -95,7 +95,7 @@ class Sub4(threading.Thread):
         if kanban["user_direction"] is not None:
             msg += self.gen_direction_text(kanban["user_direction"])
         if kanban["distance"] is not None:
-            msg += str(kanban["distance"]) + "步左右"
+            msg += str(kanban["distance"]) + "步左右，"
         if kanban["name"] is not None:
             msg += "有一個" + Information.get_indoor_destination_text(kanban["name"]) + "標示"
         if "direction" in kanban and kanban["direction"] is not None:
@@ -109,12 +109,12 @@ class Sub4(threading.Thread):
     def speak_obstacle(self, kanban):
         msg = ""    # 前方N公尺處有障礙物，請轉向N點鐘方向
         if kanban["distance"] is not None:
-            msg += "前方%s步左右有障礙物" % (str(kanban["distance"]),)
+            msg += "前方、%s步左右，有障礙物" % (str(kanban["distance"]),)
         else:
             msg += "前方有障礙物"
 
         if kanban["user_direction"] is not None:
-            msg += "請轉向%s" % (self.gen_direction_text(kanban["user_direction"]),)
+            msg += "請轉向：%s" % (self.gen_direction_text(kanban["user_direction"]),)
 
         logger.info(msg)
         self.play_sound(msg)
@@ -180,7 +180,7 @@ class Sub4(threading.Thread):
         kanbans = [
             [
                 {
-                    "name": 8,
+                    "name": "8",
                     "direction": 2,
                     "user_direction": 2,
                     "distance": 5

@@ -130,7 +130,8 @@ class HotwordDetector(object):
               sleep_time=0.03,
               audio_recorder_callback=None,
               silent_count_threshold=15,
-              recording_timeout=100):
+              recording_timeout=100,
+              audio_input_callback=None):
         """
         Start the voice detector. For every `sleep_time` second it checks the
         audio buffer for triggering keywords. If detected, then call
@@ -155,6 +156,7 @@ class HotwordDetector(object):
                                        to mark the end of a phrase that is
                                        being recorded.
         :param recording_timeout: limits the maximum length of a recording.
+        :param audio_input_callback: audio_input_callback.
         :return: None
         """
         self._running = True
@@ -223,6 +225,9 @@ class HotwordDetector(object):
                     if audio_recorder_callback is not None:
                         state = "ACTIVE"
                     continue
+                else:
+                    if audio_input_callback:
+                        audio_input_callback(data)
 
             elif state == "ACTIVE":
                 stopRecording = False

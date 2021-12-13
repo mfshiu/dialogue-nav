@@ -7,6 +7,7 @@ import pyaudio
 import wave
 from datetime import datetime
 import os
+from threading import Timer
 
 from dialogue.Helper import get_module_logger
 logger = get_module_logger(__name__)
@@ -33,11 +34,26 @@ class UserListener(threading.Thread):
         self.job_count = 0
         self.user_words = args[0]
 
+        self.running_seconds = -1
+        self.__start_listener_timer()
+
+    def __start_listener_timer(self):
+        self.running_seconds += 1
+        if self.running:
+            Timer(1, self.__start_listener_timer).start()
+
     def __detected_hotword(self):
         logger.debug("Hotword is detected.")
         self.__stop_listen_hotword()
         Speaker.play_sound("./dialogue/resources/where_to_go.mp3")
         self.listen()
+
+    def __input_audio(self, data):
+        if self.running_seconds % 60 == 0:
+            if not self.speaking:
+                audio_mean = sum([int(x) for x in data]) / len(data)
+                config.env_noise = min(10, max(0, (audio_mean - 70) // 5))
+                logger.debug("__input_audio audio_mean: %f, env_noise: %d" % (audio_mean, config.env_noise))
 
     def __stop_listen_hotword(self):
         logger.info("Stop listen hot word")
@@ -136,7 +152,9 @@ class UserListener(threading.Thread):
             logger.warn("User is speaking.")
         else:
             logger.info("Begin listening hot word")
-            HotWord.start_listen("./dialogue/resources/models/mei.pmdl", self.__detected_hotword)
+            HotWord.start_listen("./dialogue/resources/models/mei.pmdl",
+                                 detected_callback=self.__detected_hotword,
+                                 audio_input_callback=self.__input_audio)
             logger.info("End listening hot word")
 
     def run(self):
@@ -153,7 +171,9 @@ class UserListener(threading.Thread):
                 Speaker.unmute()
                 self.job_count = 0
                 time.sleep(1)
+
             time.sleep(0.01)
+
         logger.info("terminated")
 
     def listen(self, limit_seconds=10):
