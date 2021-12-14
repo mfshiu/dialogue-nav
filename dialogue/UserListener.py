@@ -50,7 +50,7 @@ class UserListener(threading.Thread):
 
     def __input_audio(self, data):
         if self.running_seconds % 60 == 0:
-            if not self.speaking:
+            if not self.speaking and hasattr(config, 'env_noise'):
                 audio_mean = sum([int(x) for x in data]) / len(data)
                 config.env_noise = min(10, max(0, (audio_mean - 70) // 5))
                 logger.debug("__input_audio audio_mean: %f, env_noise: %d" % (audio_mean, config.env_noise))
