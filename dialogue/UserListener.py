@@ -1,4 +1,5 @@
 import threading
+import math
 
 import config
 from dialogue import HotWord, Speaker, Information
@@ -35,6 +36,7 @@ class UserListener(threading.Thread):
         self.user_words = args[0]
 
         self.running_seconds = -1
+        self.processed_seconds = 0
         self.__start_listener_timer()
 
     def __start_listener_timer(self):
@@ -48,11 +50,26 @@ class UserListener(threading.Thread):
         Speaker.play_sound("./dialogue/resources/where_to_go.mp3")
         self.listen()
 
+    def __to_shorts(self, bytes):
+        shorts = []
+        for i in range(0, len(bytes), 2):
+            n = bytes[i+1] * 256 + bytes[i]
+            n = 32767 - n if n > 32767 else n
+            shorts.append(n)
+        return shorts
+
     def __input_audio(self, data):
-        if self.running_seconds % 60 == 0:
+        if self.processed_seconds == self.running_seconds:
+            return
+
+        if self.running_seconds % 2 == 0:
+            self.processed_seconds = self.running_seconds
             if not self.speaking and hasattr(config, 'env_noise'):
+                # logger.debug("__input_audio data: %s" % (data[:50],))
+                data = [x for x in self.__to_shorts(data) if x >= 0]                
+                logger.debug("__input_audio data1: %s" % (data[:50],))
                 audio_mean = sum([int(x) for x in data]) / len(data)
-                config.env_noise = min(10, max(0, (audio_mean - 70) // 5))
+                config.env_noise = min(30, max(0, math.sqrt(audio_mean) // 2))
                 logger.debug("__input_audio audio_mean: %f, env_noise: %d" % (audio_mean, config.env_noise))
 
     def __stop_listen_hotword(self):
