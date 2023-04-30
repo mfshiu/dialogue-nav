@@ -59,6 +59,7 @@ class UserListener(threading.Thread):
         return shorts
 
     def __input_audio(self, data):
+        # 每二秒計算一次環境音
         if self.processed_seconds == self.running_seconds:
             return
 
